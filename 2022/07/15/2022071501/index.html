@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.jpg">
+  <link rel="icon" type="image/png" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="前端学习交流">
+  <meta name="author" content="小侯爷">
+  <meta name="keywords" content="">
+  <title>taro3.x RN windows 下安卓APP开发与打包发布 - 小侯爷的前端画室</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+<link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/vs2015.min.css" />
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_fmb4a04yx8h.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+  
+<link rel="stylesheet" href="/css/dark.css">
+
+
+
+  <script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?838b8f18434ba2e0a7cf1855bd16fc57";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+  </script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <div id="dark" onclick="switchDarkMode()"></div>
+  <script>
+    var isNight = new Date().getHours() >= 22 || new Date().getHours() < 7; // 指定时间
+    // 依次判断 系统暗黑模式 指定时间 缓存 dark
+    if( matchMedia('(prefers-color-scheme: dark)').matches || isNight || localStorage.getItem('dark') === '1') {
+      if(!(isNight&&localStorage.getItem('noDark') === '1')) {
+        document.body.classList.add('dark');
+      }
+    }
+    let sun = '<img class="dark-img" src="https://frontend-studio-1256354221.file.myqcloud.com/img/sun.png" srcset="/img/loading.gif">';
+    let moon = '<img class="dark-img" src="https://frontend-studio-1256354221.file.myqcloud.com/img/moon.png" srcset="/img/loading.gif">'
+    document.getElementById('dark').innerHTML = document.querySelector("body").classList.contains("dark")?moon:sun;
+    //点击事件
+    function switchDarkMode() {
+    	if ($('body').hasClass('dark')) {
+        $("#dark").html("<img class='dark-img' src='https://frontend-studio-1256354221.file.myqcloud.com/img/sun.png'>");
+    		document.body.classList.remove('dark');
+    		localStorage.setItem('noDark', '1');
+    		localStorage.setItem('dark', '0');
+    	} else {
+        $("#dark").html("<img class='dark-img' src='https://frontend-studio-1256354221.file.myqcloud.com/img/moon.png'>");
+    		document.body.classList.add('dark');
+    		localStorage.setItem('dark', '1');
+    		localStorage.setItem('noDark', '0');
+    	}
+    }
+  </script>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>小侯爷的前端画室</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/index/">
+              <i class="iconfont icon-home-fill"></i>
+              首页</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/game/">
+              <i class="iconfont icon-switch-fill"></i>
+              游戏堂</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/photo/">
+              <i class="iconfont icon-images"></i>
+              相册集</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">
+              <i class="iconfont icon-archive-fill"></i>
+              文章归档</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">
+              <i class="iconfont icon-user-fill"></i>
+              关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('https://frontend-studio-1256354221.file.myqcloud.com/img/banner_2.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+                <div class="mt-3 post-meta">
+                  <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+                  <time datetime="2022-07-15 00:00">
+                    2022年7月15日 凌晨
+                  </time>
+                </div>
+              
+
+              <div class="mt-1">
+                
+                  
+                  <span class="post-meta mr-2">
+                    <i class="iconfont icon-chart"></i>
+                    577 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta mr-2">
+                      <i class="iconfont icon-clock-fill"></i>
+                    
+                    
+                    7
+                     分钟
+                  </span>
+                
+
+                
+              </div>
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>使用taro3.4.11版本进行的安卓开发与打包<br>react-native 版本为0.67.3</p>
+<h2 id="开发准备"><a href="#开发准备" class="headerlink" title="开发准备"></a>开发准备</h2><h3 id="安装-Node"><a href="#安装-Node" class="headerlink" title="安装 Node"></a>安装 Node</h3><p>注意 Node 的版本应大于等于 14，安装完 Node 后建议设置 npm 镜像（淘宝源）以加速后面的过程（或使用科学上网工具），有些插件下载贼慢。</p>
+<h3 id="安装-Java-SE-Development-Kit-JDK"><a href="#安装-Java-SE-Development-Kit-JDK" class="headerlink" title="安装 Java SE Development Kit (JDK)"></a>安装 Java SE Development Kit (JDK)</h3><p>下载<a href="https://www.oracle.com/java/technologies/downloads/#java11-windows" target="_blank" rel="noopener">Java SE Development Kit (JDK)11</a>, 一般安装.exe后缀的就行了，.zip中多加了一些文档之类的。安装后可以在命令行中输入 javac -version 查看版本</p>
+<p>另外还需要配置环境变量，位于电脑-高级系统设置-高级-环境变量，只需要设置系统变量，用户变量可以不用管</p>
+<ol>
+<li>点击新建，输入变量名（JAVA_HOME）与变量值（jdk安装路径）<br><img src="https://segmentfault.com/img/bVc02Ik" srcset="/img/loading.gif" alt="image.png"></li>
+<li>新建CLASSPATH 变量，变量值为：<code>.;%JAVA_HOME%\lib;</code><br><img src="https://segmentfault.com/img/bVc04dR" srcset="/img/loading.gif" alt="image.png"></li>
+<li>配置path,再最后面新建一个<code>%JAVA_HOME%\bin</code><br><img src="https://segmentfault.com/img/bVc05fi" srcset="/img/loading.gif" alt="image.png"></li>
+</ol>
+<h3 id="安装-Android-Studio"><a href="#安装-Android-Studio" class="headerlink" title="安装 Android Studio"></a>安装 Android Studio</h3><p>下载安装 <a href="https://developer.android.google.cn/studio/" target="_blank" rel="noopener">Android Studio</a>，具体安装和配置可以参考<a href="https://www.react-native.cn/docs/environment-setup#1-%E5%AE%89%E8%A3%85-android-studio" target="_blank" rel="noopener">RN官网</a></p>
+<h3 id="安装-Taro-Playground"><a href="#安装-Taro-Playground" class="headerlink" title="安装 Taro Playground"></a>安装 Taro Playground</h3><p><a href="https://github.com/wuba/taro-playground" target="_blank" rel="noopener">Taro Playground</a> 是taro官方提供的一个套壳工具方便在开发环境进行调试</p>
+<h3 id="创建-Github-项目"><a href="#创建-Github-项目" class="headerlink" title="创建 Github 项目"></a>创建 Github 项目</h3><p>在github上创建一个项目，后续将代码上传至github，通过GitHub Actions进行CI打包</p>
+<h2 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h2><p>使用命令行创建模板项目，选择React Native作为默认模板<br><code>$ taro init</code><br><img src="https://segmentfault.com/img/bVc07y3" srcset="/img/loading.gif" alt="image.png"></p>
+<h2 id="本地运行"><a href="#本地运行" class="headerlink" title="本地运行"></a>本地运行</h2><p>运行<code>yarn dev:rn</code>,然后使用Taro Playground扫码调试</p>
+<h2 id="本地安卓android打包"><a href="#本地安卓android打包" class="headerlink" title="本地安卓android打包"></a>本地安卓android打包</h2><p>运行命令</p>
+<div class="hljs"><pre><code class="hljs plain">cd .&#x2F;android
+.&#x2F;gradlew assembleRelease</code></pre></div>
+<h3 id="报错”Failed-to-install-the-following-Android-SDK-packages-as-some-licences-have-not-been-accepted”-error"><a href="#报错”Failed-to-install-the-following-Android-SDK-packages-as-some-licences-have-not-been-accepted”-error" class="headerlink" title="报错”Failed to install the following Android SDK packages as some licences have not been accepted” error"></a>报错”Failed to install the following Android SDK packages as some licences have not been accepted” error</h3><p>解决：在Android Studio中，转到Tools -&gt; SDK Manager，转到SDK Tools选项卡，选择Android SDK Command-line Tools (latest) 并按Apply下载<br><img src="https://segmentfault.com/img/bVc08E4" srcset="/img/loading.gif" alt="image.png"></p>
+<h3 id="报错React-Native-android-build-failed-SDK-location-not-found"><a href="#报错React-Native-android-build-failed-SDK-location-not-found" class="headerlink" title="报错React Native android build failed. SDK location not found"></a>报错React Native android build failed. SDK location not found</h3><p>解决：在android目录下创建一个local.properties写入Android SDK的安装地址</p>
+<div class="hljs"><pre><code class="hljs plain">sdk.dir &#x3D; &#x2F;Users&#x2F;USERNAME&#x2F;Library&#x2F;Android&#x2F;sdk</code></pre></div>
+
+<h2 id="远程打包"><a href="#远程打包" class="headerlink" title="远程打包"></a>远程打包</h2><p>运行命令后，在github上点击action运行打包</p>
+<div class="hljs"><pre><code class="hljs plain">cd .&#x2F;android
+git update-index --chmod&#x3D;+x gradlew &#x2F;&#x2F; 解决报错Gradlew: Permission denied
+cd ..
+git push</code></pre></div>
+<p><img src="https://segmentfault.com/img/bVc08yP" srcset="/img/loading.gif" alt="image.png"></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a href="https://www.react-native.cn/docs/environment-setup" target="_blank" rel="noopener">https://www.react-native.cn/docs/environment-setup</a></li>
+<li><a href="https://taro-docs.jd.com/taro/blog/2021-10-14-Taro-React-Native-update/" target="_blank" rel="noopener">https://taro-docs.jd.com/taro/blog/2021-10-14-Taro-React-Native-update/</a></li>
+<li><a href="https://taro-docs.jd.com/taro/docs/react-native" target="_blank" rel="noopener">https://taro-docs.jd.com/taro/docs/react-native</a></li>
+<li><a href="https://stackoverflow.com/questions/54273412/failed-to-install-the-following-android-sdk-packages-as-some-licences-have-not" target="_blank" rel="noopener">https://stackoverflow.com/questions/54273412/failed-to-install-the-following-android-sdk-packages-as-some-licences-have-not</a></li>
+<li><a href="https://stackoverflow.com/questions/32634352/react-native-android-build-failed-sdk-location-not-found" target="_blank" rel="noopener">https://stackoverflow.com/questions/32634352/react-native-android-build-failed-sdk-location-not-found</a></li>
+</ol>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%BC%80%E5%8F%91%E4%B8%8E%E5%A1%AB%E5%9D%91/">开发与填坑</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/APP/">APP</a>
+                    
+                      <a class="hover-with-bg" href="/tags/taro/">taro</a>
+                    
+                      <a class="hover-with-bg" href="/tags/RN/">RN</a>
+                    
+                      <a class="hover-with-bg" href="/tags/windows/">windows</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%AE%89%E5%8D%93/">安卓</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2022/06/20/2022062001/">
+                        <span class="hidden-mobile">解决 chrome Private Network Access报错</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script defer src="https://cdn.staticfile.org/valine/1.4.14/Valine.min.js" ></script>
+
+  <script type="text/javascript">
+    var oldLoadVa = window.onload;
+    window.onload = function () {
+      oldLoadVa && oldLoadVa();
+
+      new Valine({
+        el: "#vcomments",
+        app_id: "Xj9NvwN7LBLvF2dqHLeRY1ix-gzGzoHsz",
+        app_key: "kYB3rhk7JSGIP0RNTvgh7HMq",
+        placeholder: "说点什么",
+        path: window.location.pathname,
+        avatar: "retro",
+        meta: ["nick","mail","link"],
+        pageSize: "10",
+        lang: "zh-CN",
+        highlight: false,
+        recordIP: false,
+        serverURLs: "",
+      });
+    };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://valine.js.org" target="_blank" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="#"><span>前端画室</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/xiaohouye1995" target="_blank" rel="nofollow noopener">
+        <span>小侯爷</span></a>
+    </div>
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/main.js" ></script>
+
+
+  <script  src="/js/lazyload.js" ></script>
+
+
+
+  
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+<!-- Plugins -->
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "taro3.x RN windows 下安卓APP开发与打包发布&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

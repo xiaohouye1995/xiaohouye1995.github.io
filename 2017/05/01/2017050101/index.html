@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-touch-icon.jpg">
+  <link rel="icon" type="image/png" href="/img/favicon.jpg">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="前端学习交流">
+  <meta name="author" content="小侯爷">
+  <meta name="keywords" content="">
+  <title>Hexo深坑之旅（5）—Materia主题优化 - 小侯爷的前端画室</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+<link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/vs2015.min.css" />
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_fmb4a04yx8h.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+  
+<link rel="stylesheet" href="/css/dark.css">
+
+
+
+  <script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?838b8f18434ba2e0a7cf1855bd16fc57";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+  </script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <div id="dark" onclick="switchDarkMode()"></div>
+  <script>
+    var isNight = new Date().getHours() >= 22 || new Date().getHours() < 7; // 指定时间
+    // 依次判断 系统暗黑模式 指定时间 缓存 dark
+    if( matchMedia('(prefers-color-scheme: dark)').matches || isNight || localStorage.getItem('dark') === '1') {
+      if(!(isNight&&localStorage.getItem('noDark') === '1')) {
+        document.body.classList.add('dark');
+      }
+    }
+    let sun = '<img class="dark-img" src="https://frontend-studio-1256354221.file.myqcloud.com/img/sun.png" srcset="/img/loading.gif">';
+    let moon = '<img class="dark-img" src="https://frontend-studio-1256354221.file.myqcloud.com/img/moon.png" srcset="/img/loading.gif">'
+    document.getElementById('dark').innerHTML = document.querySelector("body").classList.contains("dark")?moon:sun;
+    //点击事件
+    function switchDarkMode() {
+    	if ($('body').hasClass('dark')) {
+        $("#dark").html("<img class='dark-img' src='https://frontend-studio-1256354221.file.myqcloud.com/img/sun.png'>");
+    		document.body.classList.remove('dark');
+    		localStorage.setItem('noDark', '1');
+    		localStorage.setItem('dark', '0');
+    	} else {
+        $("#dark").html("<img class='dark-img' src='https://frontend-studio-1256354221.file.myqcloud.com/img/moon.png'>");
+    		document.body.classList.add('dark');
+    		localStorage.setItem('dark', '1');
+    		localStorage.setItem('noDark', '0');
+    	}
+    }
+  </script>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>小侯爷的前端画室</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/index/">
+              <i class="iconfont icon-home-fill"></i>
+              首页</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/game/">
+              <i class="iconfont icon-switch-fill"></i>
+              游戏堂</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/photo/">
+              <i class="iconfont icon-images"></i>
+              相册集</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">
+              <i class="iconfont icon-archive-fill"></i>
+              文章归档</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">
+              <i class="iconfont icon-user-fill"></i>
+              关于</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('https://frontend-studio-1256354221.file.myqcloud.com/img/banner_2.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+                <div class="mt-3 post-meta">
+                  <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+                  <time datetime="2017-05-01 00:00">
+                    2017年5月1日 凌晨
+                  </time>
+                </div>
+              
+
+              <div class="mt-1">
+                
+                  
+                  <span class="post-meta mr-2">
+                    <i class="iconfont icon-chart"></i>
+                    3.1k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta mr-2">
+                      <i class="iconfont icon-clock-fill"></i>
+                    
+                    
+                    41
+                     分钟
+                  </span>
+                
+
+                
+              </div>
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <meta name="referrer" content="no-referrer" />
+
+<blockquote>
+<p><strong>前言：</strong>上一次已经将hexo成功部署到了Mac上，接着就该选择主题了。之前在Windows上采用的是 <a href="https://github.com/wuchong/jacman" target="_blank" rel="noopener">jacman主题</a>，而这一次在<a href="https://hexo.io/themes/" target="_blank" rel="noopener">Hexo官网主题库</a>中发现了一个更为精美的主题—— <a href="https://github.com/viosey/hexo-theme-material" target="_blank" rel="noopener">Materia</a></p>
+</blockquote>
+<p><strong>文章须知：</strong><br>在 Hexo 中，通常有两份配置文件，一个是站点根目录下的 _config.yml；另外一个是主题目录下的 _config.yml。为了描述方便，在以下说明中，将前者称为 站点配置文件，后者称为 主题配置文件。<br>此外推荐阅读<a href="https://hexo.io/docs/" target="_blank" rel="noopener">hexo官方文档</a>和<a href="https://material.viosey.com/" target="_blank" rel="noopener">Materia官方文档</a>，本文更多的对于前两者的补充和解释。</p>
+<h2 id="安装Materia"><a href="#安装Materia" class="headerlink" title="安装Materia"></a>安装Materia</h2><h3 id="方法一：Github"><a href="#方法一：Github" class="headerlink" title="方法一：Github"></a>方法一：Github</h3><p>你可以在 Github 下载 <a href="https://github.com/viosey/hexo-theme-material/releases" target="_blank" rel="noopener">稳定的发布版本</a>。</p>
+<h3 id="方法二：NPM"><a href="#方法二：NPM" class="headerlink" title="方法二：NPM"></a>方法二：NPM</h3><p>打开终端，cd  到 hexo 所在的目录，执行命令：</p>
+<div class="hljs"><pre><code class="hljs plain">$ npm install hexo-material</code></pre></div>
+<p>安装完毕后，首先在 hexo 目录下的 themes 文件夹中新建一个文件夹 material ，之后在 hexo 目录下的 node_modules 文件夹中找到 hexo-material 文件夹，然后把里面的全部文件复制到 materia 文件夹里。</p>
+<div class="hljs"><pre><code class="hljs plain">hexo目录结构：
+|-- _config.yml
+|-- node_modules
+|-- package.json
+|-- scaffolds
+|-- scripts
+|-- source
+   |-- _drafts
+   |-- _posts
+|-- themes</code></pre></div>
+<p><strong>注意！！！</strong><br>需要将 materia 主题下的配置文件 _config.template.yml 重命名为<br> _config.yml。<br>然后打开<strong>站点配置文件</strong>，查找 theme 参数并修改为 materia </p>
+<div class="hljs"><pre><code class="hljs plain">theme: material</code></pre></div>
+<p>查找 language 参数并修改为 zh-CN</p>
+<div class="hljs"><pre><code class="hljs plain">language: zh-CN</code></pre></div>
+<p>现在，运行 <code>$ hexo s</code> 并访问 <a href="http://localhost:4000" target="_blank" rel="noopener">http://localhost:4000</a> 确保站点正确运行。</p>
+<h2 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h2><p><strong>!!!注意</strong></p>
+<ul>
+<li>Material 主题中相对应的图标可在 <a href="https://material.io/icons/" target="_blank" rel="noopener">Material icons</a> 查询。</li>
+</ul>
+<ul>
+<li>Material 主题中图片调用地址为 /source/img/ 例：<code>&quot; /img/favicon.png &quot;</code></li>
+</ul>
+<div class="hljs"><pre><code class="hljs plain">Material 主题配置文件（节选）
+# Head info
+head:
+    favicon: &quot;&#x2F;img&#x2F;favicon.png&quot; #网站的 favicon
+    high_res_favicon: &quot;&#x2F;img&#x2F;favicon.png&quot;  #高清 favicon
+    apple_touch_icon: &quot;&#x2F;img&#x2F;favicon.png&quot; #iOS 主屏按钮图标
+    keywords: blog web 前端 #网站关键词
+
+# Jump Links Settings
+url:
+    rss:   #设置生成的 rss 或 atom url
+    daily_pic: &quot;https:&#x2F;&#x2F;zhouxiaoyu1994.github.io&#x2F;FCC2017&#x2F;resume&#x2F;index.html&quot;  #设置 daily_pic 模块 点击时跳转的 url
+    logo: &quot;https:&#x2F;&#x2F;github.com&#x2F;zhouxiaoyu1994&quot;  #设置 logo 点击时跳转的 url
+
+
+# ---------------------------------------------------------------
+# Style Settings
+# ---------------------------------------------------------------
+
+# Schemes 
+scheme: Paradox #主题外观（默认）
+#scheme: Isolation  #主题外观（极简）
+
+# UI &amp; UX: slogan, color, effect
+uiux:
+    slogan: &quot;前端作品集&quot;  #显示在 blog_info 模块中的标语，你可以设置单行标语或者多行标语：
+    theme_color: &quot;#0097A7&quot;  #主题主要颜色。主题的大部分地方使用此颜色。
+    theme_sub_color: &quot;#00838F&quot; #主题辅助颜色。
+    hyperlink_color: &quot;#00838F&quot; #超链接颜色。
+    button_color: &quot;#757575&quot; #按钮颜色，例如 toTop 或 menu_button。
+    android_chrome_color: &quot;#0097A7&quot; #安卓 Chrome 浏览器的地址栏颜色。
+    nprogress_color: &quot;#29d&quot; #页面加载时顶部加载进度条的颜色。
+    nprogress_buffer: &quot;800&quot; #页面加载时顶部加载进度条的缓冲时间。
+
+# JS Effect Switches
+js_effect: #用来控制 Material 主题中自带的多种 js 特性。
+    fade: true #页面加载时部分模块的渐显效果，默认为 true。
+    smoothscroll: false #页面平滑滚动特效，默认为 false。
+
+# Reading experience
+reading: #用于设置阅读体验。
+    entry_excerpt: 80 #首页文章输出摘要的字符长度。默认为 80。
+
+# Thumbnail Settings
+thumbnail:
+    purecolor: #填入颜色代码。如果文章内无设置缩略图，此项又不为空，则使用纯色缩略图。
+    random_amount: 19 #随机图片数量，根据 主题所在文件夹&#x2F;source&#x2F;img&#x2F;random 中的图片数量设置。Material 主题默认提供了 19 张 Material 风格的缩略图。
+
+# Background Settings
+# bing available parameter:
+#     new | color&#x3D; | type&#x3D;
+#         color available value: black, blue, brown, green, multi, orange, pink, purple, red, white, yellow
+#         type available value: A (animal), C (culture), N (nature), S (space), T (travel)
+background:
+    #purecolor: &quot;#F5F5F5&quot; #填入颜色代码。则站点使用纯色背景。
+    bgimg: &quot;&#x2F;img&#x2F;bg.png&quot; #背景地址，默认调用 主题文件夹 -&gt; source -&gt; img 中的 bg.png。可更换此图片或者自己填入 url。
+    bing: #用于启用“必应美图”的图片作为背景。
+        enable: false
+        parameter:
+
+# Images Settings
+img:
+    logo: &quot;&#x2F;img&#x2F;logo.png&quot; #显示于 blog_info 模块中。
+    avatar: &quot;&#x2F;img&#x2F;avatar.png&quot;  #你的头像设置。
+    daily_pic: &quot;&#x2F;img&#x2F;daily_pic.png&quot;     #显示于 daily_pic 模块中。
+    sidebar_header: &quot;&#x2F;img&#x2F;sidebar_header.png&quot;   #显示于 sidebar 顶部。
+    footerico: &quot;&#x2F;img&#x2F;footer&#x2F;footer_ico-&quot;    #设置 footer 中 SNS 图标的路径。
+    random_thumbnail: &quot;&#x2F;img&#x2F;random&#x2F;material-&quot;   #随机缩略图的路径。
+    footer_image:   #你可以在侧边栏底部放置任何你想要的图片。
+        #upyun_logo:
+            #link: &quot;https:&#x2F;&#x2F;www.upyun.com&#x2F;&quot;
+            #src: &quot;&#x2F;img&#x2F;upyun_logo.svg&quot;
+
+# Custom Fonts #用于设置站点的字体。
+fonts: Roboto, &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, &quot;微软雅黑&quot;, Arial, sans-serif
+
+# Card Elevation Level  
+card_elevation: 2   #用来设置主题卡片阴影。
+
+
+# ---------------------------------------------------------------
+# Menu Settings
+# ---------------------------------------------------------------
+
+# SNS Menu
+sns:    #用于填写你的 SNS 信息，其中 email 会显示在侧边栏，其他信息会以按钮的形式显示在 footer。
+    email: 363993481@qq.com
+    facebook: 
+    twitter: 
+    googleplus: 
+    instagram:
+    tumblr:
+    bilibili:
+    telegram:
+    weibo: &quot;http:&#x2F;&#x2F;weibo.com&#x2F;p&#x2F;1005055736438053&#x2F;home?from&#x3D;page_100505&amp;mod&#x3D;TAB&amp;is_all&#x3D;1#place&quot;
+    github: &quot;https:&#x2F;&#x2F;github.com&#x2F;zhouxiaoyu1994&quot;
+    linkedin: &quot;http:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;%E4%BF%8A%E9%98%B3-%E5%91%A8-811333136&#x2F;&quot;
+    zhihu: &quot;https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;zhou-xiao-yu-1994&#x2F;activities&quot;
+    jianshu: &quot;http:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;87b03448aa56&quot;
+
+# SNS Share Switch
+sns_share:  #用于定义分享菜单中的项目， false 的项将不会显示在分享菜单中。
+    twitter: true
+    facebook: true
+    googleplus: false
+    weibo: true
+    linkedin: true
+    qq: true
+    telegram: false
+
+# Sidebar Customize
+sidebar:
+    dropdown:   #用于设置 Paradox 侧边栏用户下拉菜单，默认为空。
+        Email Me:
+            link: &quot;mailto:363993481@qq.com&quot;
+            icon: email
+        简书:
+            link: &quot;http:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;87b03448aa56&quot;
+            icon: book
+        Linkedin:
+            link: &quot;http:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;%E4%BF%8A%E9%98%B3-%E5%91%A8-811333136&#x2F;&quot;
+            icon: Linkedin
+    homepage:
+        use: true #设置 true 时会在侧边栏显示 “主页” 按钮.
+        icon: home  #在 “主页” 前面显示一个 Material 图标。为空和被注释时则不显示.
+        divider: false
+    archives:
+        use: true
+        icon: inbox
+        divider: false
+    categories:
+        use: true
+        icon: chrome_reader_mode
+        divider: false   
+    pages:
+        标签云:  #该独立页面的名称，请自行修改。
+            link: &quot;&#x2F;tags&quot;   #link 的参数为相对路径，对应 hexo 目录下的 source 文件夹内的相应文件夹。
+            icon: cloud   #icon 的参数为自定义的 Material 图标，可用图标可在 Material icons 查询。
+            divider: false  #设置成 true 后会在该条目底部增加一条分割线
+        映像:
+            link: &quot;&#x2F;gallery&quot;
+            icon: images
+            divider: false
+        前端作品集:
+            link: &quot;https:&#x2F;&#x2F;zhouxiaoyu1994.github.io&#x2F;FCC2017&#x2F;resume&#x2F;index.html&quot;
+            icon: 
+            divider: false
+        友情链接:
+            link: &quot;&#x2F;links&quot;
+            icon: 
+            divider: false
+    article_num:  #在主题的侧边栏显示文章总数。
+        use: false #设置成 true 时会在侧边栏显示文章总数。
+        divider: false
+    footer:   #配置侧边栏的底部
+        divider: false
+        theme: false  #设置成 true 后会在侧边栏底部增加一个指向 Material 主题的链接。
+        support: false
+        feedback: false
+        material: false
+
+# Qrcode for redirect at other device
+qrcode: true  #用于在文章页中显示二维码，扫描二维码即可直接打开文章。需要 hexo-helper-qrcode 支持，使用 npm install hexo-helper-qrcode --save 进行安装。</code></pre></div>
+<h2 id="插件拓展"><a href="#插件拓展" class="headerlink" title="插件拓展"></a>插件拓展</h2><h4 id="友情链接"><a href="#友情链接" class="headerlink" title="友情链接"></a>友情链接</h4><p>Material 主题自带有友情链接模块 links</p>
+<h5 id="创建页面"><a href="#创建页面" class="headerlink" title="创建页面"></a>创建页面</h5><p>在 hexo 目录下的 source 文件夹内创建一个名为 links（只是建议，可根据自己喜好修改）的文件夹。<br>然后在文件内创建一个名为 index.md 的 Markdown 文件。<br>在 index.md 文件内写入如下内容即可。</p>
+<div class="hljs"><pre><code class="hljs plain">---
+title: links
+date:
+layout: links
+---</code></pre></div>
+<p> <strong>!!!注意：</strong> <code>title 可修改，layout 不可修改。</code></p>
+<h5 id="添加数据"><a href="#添加数据" class="headerlink" title="添加数据"></a>添加数据</h5><p>同样在在 hexo 目录下的 source 文件夹内创建一个名为 _data（禁止改名）的文件夹。然后在文件内创建一个名为 links.yml 的文件。<br>在  links.yml 文件内写入如下内容即可。</p>
+<div class="hljs"><pre><code class="hljs plain">Name:    #将 Name 改为友情链接的名字，例如 Viosey。
+    link: http:&#x2F;&#x2F;example.com  #友情链接的地址。
+    avatar: http:&#x2F;&#x2F;example.com&#x2F;avatar.png   #友情链接的头像。
+    descr: &quot;这是一个描述&quot;   #为友情链接描述。</code></pre></div>
+<p>添加多个友情链接，只需要根据上面的格式重复填写即可。</p>
+<h5 id="修改主题配置"><a href="#修改主题配置" class="headerlink" title="修改主题配置"></a>修改主题配置</h5><p>打开主题配置文件，在 pages 参数下写入如下内容：</p>
+<div class="hljs"><pre><code class="hljs plain">pages:
+        友情链接:
+            link: &quot;&#x2F;links&quot;
+            icon: 
+            divider: false</code></pre></div>
+<h4 id="图库"><a href="#图库" class="headerlink" title="图库"></a>图库</h4><p>Material 主题自带有图库模块 gallery</p>
+<h5 id="创建页面-1"><a href="#创建页面-1" class="headerlink" title="创建页面"></a>创建页面</h5><p>在 hexo 目录下的 source 文件夹内创建一个名为 gallery（只是建议，可根据自己喜好修改）的文件夹。然后在文件内创建一个名为 index.md 的 Markdown 文件。<br>在 index.md 文件内写入如下内容即可。</p>
+<div class="hljs"><pre><code class="hljs plain">---
+title: gallery
+date:
+layout: gallery
+---</code></pre></div>
+<h5 id="添加数据-1"><a href="#添加数据-1" class="headerlink" title="添加数据"></a>添加数据</h5><p>同样在在 hexo 目录下的 source 文件夹内创建一个名为 _data（禁止改名）的文件夹。然后在文件内创建一个名为 gallery.yml 的文件。<br>在 gallery.yml 文件内写入如下内容即可。</p>
+<div class="hljs"><pre><code class="hljs plain">Name:   #图片名字，例如 Material
+	full_link: http:&#x2F;&#x2F;example.com&#x2F;full-image.png  #为完整图片的地址。
+	thumb_link: http:&#x2F;&#x2F;example.com&#x2F;thumb-image.png  #为图片缩略图的地址，如果没有缩略图也可使用完整图片的地址。
+	descr: &quot;这是一个描述&quot;    #图片描述。</code></pre></div>
+<h5 id="修改主题配置-1"><a href="#修改主题配置-1" class="headerlink" title="修改主题配置"></a>修改主题配置</h5><p>打开主题配置文件，在 pages 参数下写入如下内容：</p>
+<div class="hljs"><pre><code class="hljs plain">图库:   #可改名
+       link: &quot;&#x2F;gallery&quot;
+       icon: images
+       divider: false</code></pre></div>
+<p><strong>!!!注意</strong> <strong>!!!注意</strong> <strong>!!!注意</strong><br>之前按照这样设置完图库模块后，发现不能正确加载图片的缩略图。<br><img src="http://upload-images.jianshu.io/upload_images/2031241-d3a9c0b0a5a24bdb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="img.png"><br>去Material主题 <a href="https://blog.viosey.com/" target="_blank" rel="noopener">官方demo</a> 查看、对比了一番，发现是因为缺少了一些CSS样式。<br><img src="http://upload-images.jianshu.io/upload_images/2031241-60038a71abcd56c7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="img1.png"><br>知道问题后就比较简单了，首先找到生成<br> gallery 页面的文件（/material/layout/_widget/page-gallery.ejs）。<br>打开文件，在添加相应css代码：<code>style=&quot;cursor: pointer;outline: 0px;display: block;background-image: url(&lt;%= site.data.gallery[i].thumb_link %&gt;);&quot;</code></p>
+<div class="hljs"><pre><code class="hljs plain">&lt;!-- Main --&gt;
+        &lt;div id&#x3D;&quot;main&quot;&gt;
+            &lt;% if (site.data.gallery) &#123; %&gt;
+                &lt;% for (var i in site.data.gallery) &#123; %&gt;
+                    &lt;article class&#x3D;&quot;thumb&quot;&gt;
+                        &lt;a href&#x3D;&quot;&lt;%&#x3D; site.data.gallery[i].full_link %&gt;&quot; class&#x3D;&quot;image lazy&quot; data-original&#x3D;&quot;&lt;%&#x3D; site.data.gallery[i].thumb_link %&gt;&quot; style&#x3D;&quot;cursor: pointer;outline: 0px;display: block;background-image: url(&lt;%&#x3D; site.data.gallery[i].thumb_link %&gt;);&quot;&gt;&lt;img class&#x3D;&quot;lazy&quot; data-original&#x3D;&quot;&lt;%&#x3D; site.data.gallery[i].thumb_link %&gt;&quot; alt&#x3D;&quot;&lt;%&#x3D; i %&gt;&quot; &#x2F;&gt;&lt;&#x2F;a&gt;
+                        &lt;h2&gt;&lt;%&#x3D; i %&gt;&lt;&#x2F;h2&gt;
+                        &lt;p&gt;&lt;%&#x3D; site.data.gallery[i].descr %&gt;&lt;&#x2F;p&gt;
+                    &lt;&#x2F;article&gt;
+                &lt;% &#125; %&gt;
+            &lt;% &#125; %&gt;
+        &lt;&#x2F;div&gt;</code></pre></div>
+<h4 id="标签云"><a href="#标签云" class="headerlink" title="标签云"></a>标签云</h4><p>Material 主题自带有标签云模块 tags</p>
+<h5 id="创建页面-2"><a href="#创建页面-2" class="headerlink" title="创建页面"></a>创建页面</h5><p>在 hexo 目录下的 source 文件夹内创建一个名为 tags（只是建议，可根据自己喜好修改）的文件夹。然后在文件内创建一个名为 index.md 的 Markdown 文件。<br>在 index.md 文件内写入如下内容即可。</p>
+<div class="hljs"><pre><code class="hljs plain">---
+title: tags
+date:
+layout: tags
+---</code></pre></div>
+<h4 id="topPost"><a href="#topPost" class="headerlink" title="topPost"></a>topPost</h4><p>使用该插件可以将指定文章置顶。需要按照先下载安装 <code>$ npm install hexo-helper-post-top --save</code><br>之后在您需要置顶文章的 .md 中，添加 top: true 即可置顶。</p>
+<h4 id="本地搜索"><a href="#本地搜索" class="headerlink" title="本地搜索"></a>本地搜索</h4><p>使用本地搜索需要安装 <a href="https://github.com/PaicHyperionDev/hexo-generator-search" target="_blank" rel="noopener">hexo-generator-search</a> 插件。<br>然后在 <strong>站点配置文件</strong>中添加</p>
+<div class="hljs"><pre><code class="hljs plain">search:
+path: search.xml
+field: all</code></pre></div>
+<h4 id="不蒜子"><a href="#不蒜子" class="headerlink" title="不蒜子"></a>不蒜子</h4><p>使用 不蒜子 浏览次数统计，仅需在 主题配置文件 中将 busuanzi: enable: 的值设置为 true。</p>
+<div class="hljs"><pre><code class="hljs plain">- enable:         默认为 false。  
+- all_site_uv:     默认为 false。 #可统计全站的独立访客人数，即可在 blog_info 模块的 Menu 菜单中看到。  
+- post_pv:       默认为 false。   # 统计每篇文章的页面浏览次数，在文章页的 分享按钮 菜单中可看到。
+- busuanzi_pure_mini_js:       统计 js。  #调用不蒜子统计 js 文件，可将该文件保存至你的 WebServer 或 CDN 中，然后在这里填入 URL。</code></pre></div>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>至此，Hexo深坑之旅也算告一段落了。作为一个轻量级博客管理工具 Hexo 无疑是非常强大的，不论是其便捷性、灵活性，还是可塑性，都是十分优秀和精致。不过说到底他也只是一个工具，博客的核心始终还是文章，不能本末倒置。如今博客的框架已经大致完成，虽然还不是特别完善，但是也该把精力投入到学习和写作当中去了，至于 hexo 的其他优化只用等到用到时，再进行更新。</p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%BC%80%E5%8F%91%E4%B8%8E%E5%A1%AB%E5%9D%91/">开发与填坑</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Hexo/">Hexo</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Materia/">Materia</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2017/06/18/xianjianqixiazhuan/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">《仙剑奇侠传》评测：少年郎，就当鲜衣怒马仗剑天涯</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2017/04/30/2017043001/">
+                        <span class="hidden-mobile">Hexo深坑之旅（4）— Mac系统下搭建Hexo</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div id="vcomments"></div>
+  <script defer src="https://cdn.staticfile.org/valine/1.4.14/Valine.min.js" ></script>
+
+  <script type="text/javascript">
+    var oldLoadVa = window.onload;
+    window.onload = function () {
+      oldLoadVa && oldLoadVa();
+
+      new Valine({
+        el: "#vcomments",
+        app_id: "Xj9NvwN7LBLvF2dqHLeRY1ix-gzGzoHsz",
+        app_key: "kYB3rhk7JSGIP0RNTvgh7HMq",
+        placeholder: "说点什么",
+        path: window.location.pathname,
+        avatar: "retro",
+        meta: ["nick","mail","link"],
+        pageSize: "10",
+        lang: "zh-CN",
+        highlight: false,
+        recordIP: false,
+        serverURLs: "",
+      });
+    };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://valine.js.org" target="_blank" rel="nofollow noopener noopener">comments
+      powered by Valine.</a></noscript>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="#"><span>前端画室</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/xiaohouye1995" target="_blank" rel="nofollow noopener">
+        <span>小侯爷</span></a>
+    </div>
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/main.js" ></script>
+
+
+  <script  src="/js/lazyload.js" ></script>
+
+
+
+  
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+<!-- Plugins -->
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Hexo深坑之旅（5）—Materia主题优化&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

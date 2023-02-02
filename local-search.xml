@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>taro3.x RN windows 下安卓APP开发与打包发布</title>
+    <link href="/2022/07/15/2022071501/"/>
+    <url>/2022/07/15/2022071501/</url>
+    
+    <content type="html"><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>使用taro3.4.11版本进行的安卓开发与打包<br>react-native 版本为0.67.3</p><h2 id="开发准备"><a href="#开发准备" class="headerlink" title="开发准备"></a>开发准备</h2><h3 id="安装-Node"><a href="#安装-Node" class="headerlink" title="安装 Node"></a>安装 Node</h3><p>注意 Node 的版本应大于等于 14，安装完 Node 后建议设置 npm 镜像（淘宝源）以加速后面的过程（或使用科学上网工具），有些插件下载贼慢。</p><h3 id="安装-Java-SE-Development-Kit-JDK"><a href="#安装-Java-SE-Development-Kit-JDK" class="headerlink" title="安装 Java SE Development Kit (JDK)"></a>安装 Java SE Development Kit (JDK)</h3><p>下载<a href="https://www.oracle.com/java/technologies/downloads/#java11-windows" target="_blank" rel="noopener">Java SE Development Kit (JDK)11</a>, 一般安装.exe后缀的就行了，.zip中多加了一些文档之类的。安装后可以在命令行中输入 javac -version 查看版本</p><p>另外还需要配置环境变量，位于电脑-高级系统设置-高级-环境变量，只需要设置系统变量，用户变量可以不用管</p><ol><li>点击新建，输入变量名（JAVA_HOME）与变量值（jdk安装路径）<br><img src="https://segmentfault.com/img/bVc02Ik" srcset="/img/loading.gif" alt="image.png"></li><li>新建CLASSPATH 变量，变量值为：<code>.;%JAVA_HOME%\lib;</code><br><img src="https://segmentfault.com/img/bVc04dR" srcset="/img/loading.gif" alt="image.png"></li><li>配置path,再最后面新建一个<code>%JAVA_HOME%\bin</code><br><img src="https://segmentfault.com/img/bVc05fi" srcset="/img/loading.gif" alt="image.png"></li></ol><h3 id="安装-Android-Studio"><a href="#安装-Android-Studio" class="headerlink" title="安装 Android Studio"></a>安装 Android Studio</h3><p>下载安装 <a href="https://developer.android.google.cn/studio/" target="_blank" rel="noopener">Android Studio</a>，具体安装和配置可以参考<a href="https://www.react-native.cn/docs/environment-setup#1-%E5%AE%89%E8%A3%85-android-studio" target="_blank" rel="noopener">RN官网</a></p><h3 id="安装-Taro-Playground"><a href="#安装-Taro-Playground" class="headerlink" title="安装 Taro Playground"></a>安装 Taro Playground</h3><p><a href="https://github.com/wuba/taro-playground" target="_blank" rel="noopener">Taro Playground</a> 是taro官方提供的一个套壳工具方便在开发环境进行调试</p><h3 id="创建-Github-项目"><a href="#创建-Github-项目" class="headerlink" title="创建 Github 项目"></a>创建 Github 项目</h3><p>在github上创建一个项目，后续将代码上传至github，通过GitHub Actions进行CI打包</p><h2 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h2><p>使用命令行创建模板项目，选择React Native作为默认模板<br><code>$ taro init</code><br><img src="https://segmentfault.com/img/bVc07y3" srcset="/img/loading.gif" alt="image.png"></p><h2 id="本地运行"><a href="#本地运行" class="headerlink" title="本地运行"></a>本地运行</h2><p>运行<code>yarn dev:rn</code>,然后使用Taro Playground扫码调试</p><h2 id="本地安卓android打包"><a href="#本地安卓android打包" class="headerlink" title="本地安卓android打包"></a>本地安卓android打包</h2><p>运行命令</p><div class="hljs"><pre><code class="hljs plain">cd .&#x2F;android.&#x2F;gradlew assembleRelease</code></pre></div><h3 id="报错”Failed-to-install-the-following-Android-SDK-packages-as-some-licences-have-not-been-accepted”-error"><a href="#报错”Failed-to-install-the-following-Android-SDK-packages-as-some-licences-have-not-been-accepted”-error" class="headerlink" title="报错”Failed to install the following Android SDK packages as some licences have not been accepted” error"></a>报错”Failed to install the following Android SDK packages as some licences have not been accepted” error</h3><p>解决：在Android Studio中，转到Tools -&gt; SDK Manager，转到SDK Tools选项卡，选择Android SDK Command-line Tools (latest) 并按Apply下载<br><img src="https://segmentfault.com/img/bVc08E4" srcset="/img/loading.gif" alt="image.png"></p><h3 id="报错React-Native-android-build-failed-SDK-location-not-found"><a href="#报错React-Native-android-build-failed-SDK-location-not-found" class="headerlink" title="报错React Native android build failed. SDK location not found"></a>报错React Native android build failed. SDK location not found</h3><p>解决：在android目录下创建一个local.properties写入Android SDK的安装地址</p><div class="hljs"><pre><code class="hljs plain">sdk.dir &#x3D; &#x2F;Users&#x2F;USERNAME&#x2F;Library&#x2F;Android&#x2F;sdk</code></pre></div><h2 id="远程打包"><a href="#远程打包" class="headerlink" title="远程打包"></a>远程打包</h2><p>运行命令后，在github上点击action运行打包</p><div class="hljs"><pre><code class="hljs plain">cd .&#x2F;androidgit update-index --chmod&#x3D;+x gradlew &#x2F;&#x2F; 解决报错Gradlew: Permission deniedcd ..git push</code></pre></div><p><img src="https://segmentfault.com/img/bVc08yP" srcset="/img/loading.gif" alt="image.png"></p><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol><li><a href="https://www.react-native.cn/docs/environment-setup" target="_blank" rel="noopener">https://www.react-native.cn/docs/environment-setup</a></li><li><a href="https://taro-docs.jd.com/taro/blog/2021-10-14-Taro-React-Native-update/" target="_blank" rel="noopener">https://taro-docs.jd.com/taro/blog/2021-10-14-Taro-React-Native-update/</a></li><li><a href="https://taro-docs.jd.com/taro/docs/react-native" target="_blank" rel="noopener">https://taro-docs.jd.com/taro/docs/react-native</a></li><li><a href="https://stackoverflow.com/questions/54273412/failed-to-install-the-following-android-sdk-packages-as-some-licences-have-not" target="_blank" rel="noopener">https://stackoverflow.com/questions/54273412/failed-to-install-the-following-android-sdk-packages-as-some-licences-have-not</a></li><li><a href="https://stackoverflow.com/questions/32634352/react-native-android-build-failed-sdk-location-not-found" target="_blank" rel="noopener">https://stackoverflow.com/questions/32634352/react-native-android-build-failed-sdk-location-not-found</a></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发与填坑</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>APP</tag>
+      
+      <tag>taro</tag>
+      
+      <tag>RN</tag>
+      
+      <tag>windows</tag>
+      
+      <tag>安卓</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>解决 chrome Private Network Access报错</title>
+    <link href="/2022/06/20/2022062001/"/>
+    <url>/2022/06/20/2022062001/</url>
+    
+    <content type="html"><![CDATA[<p>chrome系浏览器报错跨域问题：The request client is not a secure context and the resource is in more-private address space `privat</p><p>chrome 102版本新增特性，导致如果域名ip变更或者使用vpn报错</p><p><a href="https://juejin.cn/post/7111190533942280206#heading-0" target="_blank" rel="noopener">https://juejin.cn/post/7111190533942280206#heading-0</a></p><p>解决方案：</p><ol><li>使用Chrome低版本或其他浏览器。</li><li>将网站升级为https。</li><li>在Chrome浏览器地址栏搜索chrome://flags，然后在搜索框搜索Block insecure private network requests，最后将其Default改为Disabled。</li></ol><p>或者可以使用js强制刷新页面解决</p><div class="hljs"><pre><code class="hljs js"><span class="hljs-comment">// isPNA.js</span><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clearCache</span>(<span class="hljs-params">reloadAfterClear = true</span>) </span>&#123;  <span class="hljs-keyword">if</span>(<span class="hljs-string">'caches'</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">window</span>)&#123;    caches.keys().then(<span class="hljs-function">(<span class="hljs-params">names</span>) =&gt;</span> &#123;      names.forEach(<span class="hljs-keyword">async</span> (name) =&gt; &#123;        <span class="hljs-keyword">await</span> caches.delete(name)      &#125;)    &#125;)    <span class="hljs-keyword">if</span>(reloadAfterClear) &#123;      <span class="hljs-built_in">window</span>.location.reload()    &#125;  &#125;&#125;<span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> <span class="hljs-built_in">window</span> !== <span class="hljs-string">'undefined'</span>) &#123;  <span class="hljs-keyword">const</span> pna = sessionStorage.getItem(<span class="hljs-string">'pna-clearCache'</span>)  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'pna'</span>, pna)  <span class="hljs-keyword">if</span> (!pna) &#123;  <span class="hljs-comment">// window.location.replace(window.location.href) </span>  clearCache()  sessionStorage.setItem(<span class="hljs-string">'pna-clearCache'</span>, <span class="hljs-literal">true</span>)  &#125;&#125;</code></pre></div><div class="hljs"><pre><code class="hljs js"><span class="hljs-comment">// _document.js</span>&lt;script src=<span class="hljs-string">"/group/isPNA.js"</span>&gt;&lt;<span class="hljs-regexp">/script&gt;</span></code></pre></div>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发与填坑</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>chrome</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Angular ng-repeat 使用 track by $index 时与 filter 过滤冲突解决</title>
+    <link href="/2020/06/12/2020061201/"/>
+    <url>/2020/06/12/2020061201/</url>
+    
+    <content type="html"><![CDATA[<p>在 angular  下使用 ng-repeat 时， 如果循环的数组中存在有重复的元素，会报错：</p><div class="hljs"><pre><code class="hljs plain">Error: [ngRepeat:dupes] Duplicates in a repeater are not allowed. Use &#39;track by&#39; expression to specify unique keys. Repeater: c in msg, Duplicate key: object:63, Duplicate value:</code></pre></div><p>因为其不允许 collection 有相同的id（相同的元素会形成相同的id）出现。而基本的数据类型它的id就是它自身的值。而解决方法就是加上 <code>track by $index</code>，或者也可以通过自己设置业务上的id，然后用其进行遍历<code>track by item.id</code></p><div class="hljs"><pre><code class="hljs plain">ng-repeat&#x3D;&quot;val in msg track by $index&quot;ng-repeat&#x3D;&quot;val in msg track by val.id&quot;</code></pre></div><p>OK，这样就能解决循环数组重复的问题，不过当使用<code>track by $index</code>后，又会引出一个新的问题：<strong>当数据修改时，不变数据所在的dom不被重新渲染</strong><br>例如：<br>ng-repeat 循环列表加入 track-by 后，再使用 filter 过滤方法过滤不符合要求的列表项，会发现 msg 数组中的值并没有被过滤。</p><div class="hljs"><pre><code class="hljs plain">ng-repeat&#x3D;&quot;val in msg track by val.id | filter:storeIDStoresFilter&quot;</code></pre></div><p>而翻看 angular 文档，发现需要将<code>track by $index</code>作为最后一个表达式，才能完成渲染。</p><div class="hljs"><pre><code class="hljs plain">ng-repeat&#x3D;&quot;val in msg | filter:storeIDStoresFilter track by val.id&quot;</code></pre></div><p>OK，过滤渲染成功</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发与填坑</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Angular</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>FrontendStudio 前端画室</title>
+    <link href="/2020/05/15/FrontendStudio/"/>
+    <url>/2020/05/15/FrontendStudio/</url>
+    
+    <content type="html"><![CDATA[<p>个人博客网站，随缘记录一些或重要或无聊或精彩或平淡的事情。</p><div class="note note-success">            <p>已开源</p>          </div><h3 id="DEMO"><a href="#DEMO" class="headerlink" title="DEMO"></a>DEMO</h3><p>开源地址：<a href="https://github.com/xiaohouye1995/Frontend-studio" target="_blank" rel="noopener">https://github.com/xiaohouye1995/Frontend-studio</a><br>预览(国外)：<a href="https://xiaohouye1995.github.io" target="_blank" rel="noopener">https://xiaohouye1995.github.io</a><br>预览(国内)：<a href="https://xiaohouye1995.gitee.io">https://xiaohouye1995.gitee.io</a></p><h2 id="框架-工具"><a href="#框架-工具" class="headerlink" title="框架/工具"></a>框架/工具</h2><ul><li>hexo <a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">https://hexo.io/zh-cn/</a></li><li>hexo-theme-fluid <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="noopener">https://github.com/fluid-dev/hexo-theme-fluid</a></li><li>banner图片库 <a href="https://wallroom.io/" target="_blank" rel="noopener">https://wallroom.io/</a></li><li>Valine 评论插件 <a href="https://valine.js.org/quickstart.html" target="_blank" rel="noopener">https://valine.js.org/quickstart.html</a></li><li>fancybox 画廊插件 <a href="https://fancyapps.com/fancybox/3/docs/#setup" target="_blank" rel="noopener">https://fancyapps.com/fancybox/3/docs/#setup</a></li><li>懒加载 lazyload <a href="https://github.com/tuupola/lazyload" target="_blank" rel="noopener">https://github.com/tuupola/lazyload</a></li></ul><h2 id="功能需求"><a href="#功能需求" class="headerlink" title="功能需求"></a>功能需求</h2><ul><li><input checked="" disabled="" type="checkbox"> 研究室介绍演示、代码、demo、截图、文档</li><li><input checked="" disabled="" type="checkbox"> 文章、技术、随笔、诗词</li><li><input checked="" disabled="" type="checkbox"> 评论插件</li><li><input checked="" disabled="" type="checkbox"> 相册集</li><li><input checked="" disabled="" type="checkbox"> 暗黑模式</li><li><input checked="" disabled="" type="checkbox"> 游戏名作堂</li><li><input disabled="" type="checkbox"> 诗词信笺模块</li></ul><h2 id="填坑"><a href="#填坑" class="headerlink" title="填坑"></a>填坑</h2><h3 id="TypeError-…-lazyload-is-not-a-function"><a href="#TypeError-…-lazyload-is-not-a-function" class="headerlink" title="TypeError $(…).lazyload is not a function"></a>TypeError $(…).lazyload is not a function</h3><p>在$.getJSON() 方法下使用 Query.lazyload 懒加载插件时，会导致 $() 冲突。<br><strong>解决方案：</strong> 重新定义$()</p><div class="hljs"><pre><code class="hljs js">jQuery(<span class="hljs-built_in">document</span>).ready(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">$</span>) </span>&#123;$.getJSON(<span class="hljs-string">"photos.json"</span>,<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">result</span>)</span>&#123;<span class="hljs-comment">// 相册数据</span><span class="hljs-keyword">let</span> list =  result.photos<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'list'</span>, list);    <span class="hljs-comment">// 插入html</span>    <span class="hljs-keyword">let</span> dataHtml = <span class="hljs-string">''</span>;    $(<span class="hljs-string">'.photo-container'</span>).append(dataHtml);<span class="hljs-comment">// 背景图懒加载</span>$(<span class="hljs-string">'div.lazy'</span>).lazyload();&#125;);&#125;)</code></pre></div>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目实验室</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>hexo</tag>
+      
+      <tag>Valine</tag>
+      
+      <tag>fancybox</tag>
+      
+      <tag>博客</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>AncientCurrencyConverter 古代银钱换算器</title>
+    <link href="/2020/03/30/AncientCurrencyConverter/"/>
+    <url>/2020/03/30/AncientCurrencyConverter/</url>
+    
+    <content type="html"><![CDATA[<p>古代银钱换算器(ACC)</p><p>古代的一两(文、贯、钱)等于现在的多少钱？当你有这个疑惑时，可以使用古代银钱换算器来进行换算。</p><p><strong>算法公式：</strong> 底层工人、百姓勉强维持温饱的月入（银两、文钱、布帛、银元）=现如今底层工人、百姓勉强维持温饱的月入</p><p><strong>示例：</strong><br>清乾隆二年(1737年)浙江泰顺，月工工价为0.6两白银。来源：中国第一历史档案馆乾隆刑科题本，命案档，档号0045。<br>中国2019年北京市最低工资为2200元。来源：北京市人力资源和社会保障局。因此可知1737年的0.6两约等于 2019年的2200元，换算得出：<br>**1两（白银） = 3666.67元</p><h2 id="DEMO"><a href="#DEMO" class="headerlink" title="DEMO"></a>DEMO</h2><p><img src="https://github.com/zhouxiaoyu1994/AncientCurrencyConverter/blob/master/readme_img/%E9%A2%84%E8%A7%881.jpg" srcset="/img/loading.gif" alt="预览1"></p><h3 id="微信小程序码"><a href="#微信小程序码" class="headerlink" title="微信小程序码"></a>微信小程序码</h3><p><img src="https://github.com/zhouxiaoyu1994/AncientCurrencyConverter/blob/master/readme_img/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%A0%81.jpg" srcset="/img/loading.gif" alt="小程序码"></p><h2 id="运行平台"><a href="#运行平台" class="headerlink" title="运行平台"></a>运行平台</h2><p>微信小程序、支付宝小程序、H5、ios、安卓</p><p>使用 uni-app 开发，除微信小程序外，其他端未测试</p><h2 id="框架-工具"><a href="#框架-工具" class="headerlink" title="框架/工具"></a>框架/工具</h2><ul><li>uni-app</li><li>算法规则依据 <a href="https://zhuanlan.zhihu.com/p/32089267" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/32089267</a></li><li>小程序富文本插件Parser <a href="https://github.com/jin-yufeng/Parser" target="_blank" rel="noopener">https://github.com/jin-yufeng/Parser</a></li><li>iconfont <a href="https://www.iconfont.cn/" target="_blank" rel="noopener">https://www.iconfont.cn/</a></li><li>UEditor 富文本编辑器 <a href="http://ueditor.baidu.com/website/onlinedemo.html" target="_blank" rel="noopener">http://ueditor.baidu.com/website/onlinedemo.html</a></li><li>腾讯云存储</li><li>图片压缩picdiet <a href="https://www.picdiet.com/zh-cn" target="_blank" rel="noopener">https://www.picdiet.com/zh-cn</a></li></ul><h2 id="功能需求"><a href="#功能需求" class="headerlink" title="功能需求"></a>功能需求</h2><ul><li><input checked="" disabled="" type="checkbox"> 意见反馈</li><li><input disabled="" type="checkbox"> 彩蛋 （等待你的发现~~）</li><li><input checked="" disabled="" type="checkbox"> 转发分享</li><li><input disabled="" type="checkbox"> 适配小程序pc（ipad）端</li><li><input disabled="" type="checkbox"> 支付宝版小程序</li><li><input disabled="" type="checkbox"> H5版</li><li><input checked="" disabled="" type="checkbox"> 各朝代货币图片及介绍，折叠面板，图片点击放大</li><li><input disabled="" type="checkbox"> 国外货币换算</li><li><input disabled="" type="checkbox"> 补全各朝代工价</li><li><input checked="" disabled="" type="checkbox"> 多列选择器，朝代-时期</li><li><input disabled="" type="checkbox"> 暗黑模式</li><li><input disabled="" type="checkbox"> 更多-货币换算列表</li><li><input disabled="" type="checkbox"> 转uniCloud</li><li><input disabled="" type="checkbox"> 年号换算公元历</li></ul><h2 id="技巧"><a href="#技巧" class="headerlink" title="技巧"></a>技巧</h2><h3 id="css绝对定位-absolute-居中方法"><a href="#css绝对定位-absolute-居中方法" class="headerlink" title="css绝对定位(absolute)居中方法"></a>css绝对定位(absolute)居中方法</h3><div class="hljs"><pre><code class="hljs plain">.panel &#123;    position: absolute;    top: 50%;    left: 50%;    transform: translate(-50%,-50%);&#125;</code></pre></div><h3 id="小程序图片缓存策略"><a href="#小程序图片缓存策略" class="headerlink" title="小程序图片缓存策略"></a>小程序图片缓存策略</h3><p>服务器图片更新后，小程序本地因为缓存，导致图片没有更改。<br><a href="https://www.jianshu.com/p/65710ab69c3b" target="_blank" rel="noopener">https://www.jianshu.com/p/65710ab69c3b</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目实验室</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>vue</tag>
+      
+      <tag>uni-app</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>tossCoin 抛硬币</title>
+    <link href="/2020/03/13/tossCoin/"/>
+    <url>/2020/03/13/tossCoin/</url>
+    
+    <content type="html"><![CDATA[<p>抛硬币，并不是因为硬币能帮你决定什么，而是因为在硬币抛出的那一刻，答案便会出现在你心里。</p><div class="note note-success">            <p>已开源</p>          </div><h2 id="DEMO"><a href="#DEMO" class="headerlink" title="DEMO"></a>DEMO</h2><h3 id="演示"><a href="#演示" class="headerlink" title="演示"></a>演示</h3><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/demo/tossCoinDEMO.gif" srcset="/img/loading.gif" alt="demo"></p><h3 id="微信小程序码"><a href="#微信小程序码" class="headerlink" title="微信小程序码"></a>微信小程序码</h3><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/demo/tossCoinwxQRcode.jpg" srcset="/img/loading.gif" alt="微信小程序码"></p><h3 id="支付宝小程序码"><a href="#支付宝小程序码" class="headerlink" title="支付宝小程序码"></a>支付宝小程序码</h3><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/demo/tossCoinzfbQRcode.jpg" srcset="/img/loading.gif" alt="支付宝小程序码"></p><h3 id="开源地址：https-github-com-xiaohouye1995-tossCoin"><a href="#开源地址：https-github-com-xiaohouye1995-tossCoin" class="headerlink" title="开源地址：https://github.com/xiaohouye1995/tossCoin"></a>开源地址：<a href="https://github.com/xiaohouye1995/tossCoin" target="_blank" rel="noopener">https://github.com/xiaohouye1995/tossCoin</a></h3><h2 id="运行平台"><a href="#运行平台" class="headerlink" title="运行平台"></a>运行平台</h2><p>微信小程序、支付宝小程序、H5、ios、安卓</p><p>使用 uni-app 开发，除微信小程序、支付宝小程序外，其他端未测试</p><h2 id="框架-工具"><a href="#框架-工具" class="headerlink" title="框架/工具"></a>框架/工具</h2><ul><li>uni-app</li><li>耳聆网（音效） <a href="https://www.ear0.com/search/word-%E7%A1%AC%E5%B8%81" target="_blank" rel="noopener">https://www.ear0.com/search/word-%E7%A1%AC%E5%B8%81</a></li><li>中国金币网（硬币图片）<a href="http://www.chngc.net/" target="_blank" rel="noopener">http://www.chngc.net/</a></li><li>加拿大金币网（十二星座）<a href="https://www.mint.ca/store/search/searchResults.jsp?_requestid=510053" target="_blank" rel="noopener">https://www.mint.ca/store/search/searchResults.jsp?_requestid=510053</a></li><li>Popup 弹出层 <a href="https://ext.dcloud.net.cn/plugin?id=329" target="_blank" rel="noopener">https://ext.dcloud.net.cn/plugin?id=329</a></li></ul><h2 id="功能需求"><a href="#功能需求" class="headerlink" title="功能需求"></a>功能需求</h2><ul><li><input disabled="" type="checkbox"> 抛掷方式选择</li><li><input checked="" disabled="" type="checkbox"> 硬币浮光</li><li><input checked="" disabled="" type="checkbox"> 硬币3D旋转</li><li><input checked="" disabled="" type="checkbox"> 硬币阴影</li><li><input checked="" disabled="" type="checkbox"> 硬币种类选择</li><li><input disabled="" type="checkbox"> 自定义硬币图片</li><li><input checked="" disabled="" type="checkbox"> 音效</li><li><input checked="" disabled="" type="checkbox"> 音效选择</li><li><input checked="" disabled="" type="checkbox"> 背景皮肤</li><li><input checked="" disabled="" type="checkbox"> 提示语，抛硬币理论</li><li><input checked="" disabled="" type="checkbox"> 抛掷统计</li><li><input checked="" disabled="" type="checkbox"> 抛掷次数</li><li><input checked="" disabled="" type="checkbox"> 字次数，占比</li><li><input checked="" disabled="" type="checkbox"> 人头次数，占比</li><li><input checked="" disabled="" type="checkbox"> 清空数据</li><li><input disabled="" type="checkbox"> 报警监控</li><li><input disabled="" type="checkbox"> APP端</li><li><input checked="" disabled="" type="checkbox"> 我要吐槽-意见反馈</li><li><input checked="" disabled="" type="checkbox"> 彩蛋 （等待你的发现~~）</li><li><input disabled="" type="checkbox"> 弹出框美化</li><li><input checked="" disabled="" type="checkbox"> 转发分享</li><li><input checked="" disabled="" type="checkbox"> 适配小程序pc（ipad）端</li><li><input disabled="" type="checkbox"> 触摸震动</li><li><input checked="" disabled="" type="checkbox"> 支付宝版小程序</li><li><input checked="" disabled="" type="checkbox"> 十二星座系列硬币</li><li><input disabled="" type="checkbox"> 转uniCloud</li><li><input checked="" disabled="" type="checkbox"> 彩蛋硬币皮肤，在彩蛋页下放置彩蛋码，在硬币皮肤页输入彩蛋码，获得皮肤；</li><li><input checked="" disabled="" type="checkbox"> 视频广告激励</li><li><input checked="" disabled="" type="checkbox"> 插屏广告</li><li><input disabled="" type="checkbox"> 背景选择界面交互优化，参考起点APP阅读背景选择页面</li><li><input disabled="" type="checkbox"> 联动古代银钱换算器，袁大头硬币皮肤</li><li><input checked="" disabled="" type="checkbox"> 使用cdn缓存，提高加载速度</li><li><input disabled="" type="checkbox"> 优化- 图片缓加载</li></ul><h2 id="填坑"><a href="#填坑" class="headerlink" title="填坑"></a>填坑</h2><h3 id="animation-没能重复触发"><a href="#animation-没能重复触发" class="headerlink" title="animation 没能重复触发"></a>animation 没能重复触发</h3><p>现象：第二次抛掷结果和上一次相同时，没有发生旋转效果</p><p>原因：animation 没能重复触发</p><p>解决：使用 setTimeout 方法，先移除 class 在添加新的 class 重新触发 animation</p><h3 id="transform-使-border-radius-失效"><a href="#transform-使-border-radius-失效" class="headerlink" title="transform 使 border-radius 失效"></a>transform 使 border-radius 失效</h3><p>现象：硬币扫光效果，在移动端会超出硬币范围显示</p><p>原因：transform 使 border-radius 失效</p><p>解决：使用 mask-image: radial-gradient(white, black);</p><h3 id="目标旋转90度后，成平行状态，以默认角度无法观测到"><a href="#目标旋转90度后，成平行状态，以默认角度无法观测到" class="headerlink" title="目标旋转90度后，成平行状态，以默认角度无法观测到"></a>目标旋转90度后，成平行状态，以默认角度无法观测到</h3><p>现象：rotateX() 为90deg 时，不能显示</p><p>原因： 目标旋转90度后，成平行状态，以默认角度无法观测到</p><p>解决：使用 perspective(100px) 调整角度</p><h3 id="rotateY-180deg-方法使图片进行翻转，但是每次运行时，被不断触发"><a href="#rotateY-180deg-方法使图片进行翻转，但是每次运行时，被不断触发" class="headerlink" title="rotateY(180deg) 方法使图片进行翻转，但是每次运行时，被不断触发"></a>rotateY(180deg) 方法使图片进行翻转，但是每次运行时，被不断触发</h3><p>现象：小程序真机运行下，硬币反面不断镜像翻转直到停下</p><p>原因：rotateY(180deg) 方法使图片进行翻转，但是每次运行时，被不断触发</p><p>解决：将图片翻转放在该目标的子元素上</p><h3 id="导入字体文件后，报错，影响界面渲染"><a href="#导入字体文件后，报错，影响界面渲染" class="headerlink" title="导入字体文件后，报错，影响界面渲染"></a>导入字体文件后，报错，影响界面渲染</h3><p>现象：小程序真机运行下，界面内容显示不全</p><p>原因：导入字体文件后，报错，影响界面渲染</p><p>解决：修改导入字体方式，如下：</p><div class="hljs"><pre><code class="hljs plain">把iconfont.css 的全部代码 全部复制到App.vue文件style里或者（在static目录下创建一个css文件，在main.js引入即可 import &quot;.&#x2F;static&#x2F;icon-font&#x2F;iconfont.css&quot;）然后 删除 src: url(&#39;iconfont.eot?t&#x3D;1562306471309&#39;); &#x2F; IE9 &#x2F;url(&#39;iconfont.woff?t&#x3D;1562306471309&#39;) format(&#39;woff&#39;),url(&#39;iconfont.ttf?t&#x3D;1562306471309&#39;) format(&#39;truetype&#39;), &#x2F; chrome, firefox, opera, Safari, Android, iOS 4.2+ &#x2F;url(&#39;iconfont.svg?t&#x3D;1562306471309#iconfont&#39;) format(&#39;svg&#39;); &#x2F; iOS 4.1- &#x2F;只保留转为base64的 woff2的即可</code></pre></div><h3 id="硬币旋转的音效延迟"><a href="#硬币旋转的音效延迟" class="headerlink" title="硬币旋转的音效延迟"></a>硬币旋转的音效延迟</h3><p>现象：硬币旋转的音效延迟</p><p>原因：音效加载时间长，加上音频文件较大，而且需要网络下载</p><p>解决：使用 onPlay() 方法，等待音频加载后再旋转硬币，另外压缩音频文件体积，并放入本地文件中</p><h3 id="无法修改-button-样式"><a href="#无法修改-button-样式" class="headerlink" title="无法修改 button 样式"></a>无法修改 button 样式</h3><p>现象：无法修改 button 样式</p><p>原因：uni-app 自带的border</p><p>解决：用 button::after{ border: none;} 可以去掉</p><h3 id="“navigationBarTextStyle”-“black”-属性在支付宝小程序中无效"><a href="#“navigationBarTextStyle”-“black”-属性在支付宝小程序中无效" class="headerlink" title="“navigationBarTextStyle”: “black” 属性在支付宝小程序中无效"></a>“navigationBarTextStyle”: “black” 属性在支付宝小程序中无效</h3><p>现象：”navigationBarTextStyle”: “black” 属性在支付宝小程序中无效</p><p>原因：支付宝小程序文字颜色和标题前景色共用一个属性</p><p>解决：navigationBarBackgroundColor属性不在支付宝小程序中使用</p><div class="hljs"><pre><code class="hljs css">"<span class="hljs-selector-tag">globalStyle</span>": &#123;"navigationBarTextStyle": "black","<span class="hljs-selector-tag">navigationBarTitleText</span>": "来抛硬币",// #ifdef MP-WEIXIN"<span class="hljs-selector-tag">navigationBarBackgroundColor</span>": "<span class="hljs-selector-id">#f8f8f8</span>",// #endif"<span class="hljs-selector-tag">backgroundColor</span>": "<span class="hljs-selector-id">#f7f8fa</span>"&#125;</code></pre></div><h3 id="支付宝小程序页面不能自适应高度"><a href="#支付宝小程序页面不能自适应高度" class="headerlink" title="支付宝小程序页面不能自适应高度"></a>支付宝小程序页面不能自适应高度</h3><p>现象：支付宝小程序页面不能自适应高度</p><p>原因：支付宝小程序 没有 page 根元素标签</p><p>解决：最外层加一个view标签，style=“height:100vh”</p><h3 id="腾讯云对象存储使用CDN后，CDN监控后台无访问日志"><a href="#腾讯云对象存储使用CDN后，CDN监控后台无访问日志" class="headerlink" title="腾讯云对象存储使用CDN后，CDN监控后台无访问日志"></a>腾讯云对象存储使用CDN后，CDN监控后台无访问日志</h3><p>现象：CDN访问域名无访问日志</p><p>原因：直接访问COS的域名，是不会经过CDN</p><p>解决：修改cos域名地址为CDN地址</p><h3 id="本地修改json数据"><a href="#本地修改json数据" class="headerlink" title="本地修改json数据"></a>本地修改json数据</h3><p>暂时未找到方法，改为使用 setStorageSync 将json中需要修改的数据id存入本地缓存，再进入页面读取json数据时，通过双重循环来修改数据</p><div class="hljs"><pre><code class="hljs js"><span class="hljs-keyword">import</span> coinJson <span class="hljs-keyword">from</span> <span class="hljs-string">'../../static/json/coin.json'</span><span class="hljs-comment">// 获取硬币列表</span>getCoinList() &#123;<span class="hljs-keyword">this</span>.coins = coinJson.data<span class="hljs-keyword">let</span> unlockList = uni.getStorageSync(<span class="hljs-string">'unlockList'</span>) || [];<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> item <span class="hljs-keyword">of</span> <span class="hljs-keyword">this</span>.coins[<span class="hljs-number">1</span>].list) &#123;<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> item2 <span class="hljs-keyword">of</span> unlockList) &#123;<span class="hljs-keyword">if</span> (item.value === item2) &#123;item.status = <span class="hljs-literal">true</span>&#125;&#125;&#125;&#125;,<span class="hljs-comment">// 解锁硬币皮肤</span>unlockCoin() &#123;<span class="hljs-keyword">let</span> unlockList = uni.getStorageSync(<span class="hljs-string">'unlockList'</span>) || [];    unlockList.push(<span class="hljs-keyword">this</span>.coinid)    uni.setStorageSync(<span class="hljs-string">'unlockList'</span>, unlockList);&#125;,</code></pre></div><h3 id="css绝对定位居中"><a href="#css绝对定位居中" class="headerlink" title="css绝对定位居中"></a>css绝对定位居中</h3><div class="hljs"><pre><code class="hljs css"><span class="hljs-selector-class">.conter</span>&#123;    <span class="hljs-attribute">width</span>: <span class="hljs-number">600px</span>; <span class="hljs-attribute">height</span>: <span class="hljs-number">400px</span>;    <span class="hljs-attribute">position</span>: absolute; <span class="hljs-attribute">left</span>: <span class="hljs-number">50%</span>; <span class="hljs-attribute">top</span>: <span class="hljs-number">50%</span>;    <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translate</span>(-<span class="hljs-number">50%</span>, -<span class="hljs-number">50%</span>);    <span class="hljs-comment">/* 50%为自身尺寸的一半 */</span>&#125;</code></pre></div><h3 id="css灰度滤镜"><a href="#css灰度滤镜" class="headerlink" title="css灰度滤镜"></a>css灰度滤镜</h3><div class="hljs"><pre><code class="hljs css"><span class="hljs-selector-tag">div</span> &#123;    <span class="hljs-attribute">filter</span>: <span class="hljs-built_in">grayscale</span>(<span class="hljs-number">100%</span>);&#125;</code></pre></div>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目实验室</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>vue</tag>
+      
+      <tag>uni-app</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>vue实现tab列表横向滚动时点击居中</title>
+    <link href="/2019/11/20/2019112001/"/>
+    <url>/2019/11/20/2019112001/</url>
+    
+    <content type="html"><![CDATA[<p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20191120/1.gif" srcset="/img/loading.gif" alt="ezgif.com-optimize.gif"></p><h3 id="html结构"><a href="#html结构" class="headerlink" title="html结构"></a>html结构</h3><div class="hljs"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"assort"</span>&gt;</span>    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"topNav"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"topNav"</span>&gt;</span>      <span class="hljs-tag">&lt;<span class="hljs-name">ul</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"topNavUl"</span>&gt;</span>        <span class="hljs-tag">&lt;<span class="hljs-name">li</span> <span class="hljs-attr">v-for</span>=<span class="hljs-string">"(i,index) in title"</span> <span class="hljs-attr">:key</span>=<span class="hljs-string">"index"</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">"goCenter(i.guid,index,$event)"</span> <span class="hljs-attr">:class</span>=<span class="hljs-string">"&#123;current: i.guid === currentTopNav&#125;"</span>&gt;</span>&#123;&#123; i.name &#125;&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">li</span>&gt;</span>      <span class="hljs-tag">&lt;/<span class="hljs-name">ul</span>&gt;</span>    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>内容<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre></div><h3 id="css样式"><a href="#css样式" class="headerlink" title="css样式"></a>css样式</h3><div class="hljs"><pre><code class="hljs css"><span class="hljs-selector-class">.topNav</span> &#123;    <span class="hljs-attribute">height</span>: <span class="hljs-number">41rem</span> / $model;    <span class="hljs-attribute">background</span>: <span class="hljs-number">#fff</span>;    <span class="hljs-attribute">display</span>: flex;    <span class="hljs-attribute">flex-flow</span>:row nowrap;     <span class="hljs-attribute">overflow</span>: scroll;       ul &#123;      <span class="hljs-selector-tag">display</span>: <span class="hljs-selector-tag">inline-block</span>;              <span class="hljs-selector-tag">white-space</span>: <span class="hljs-selector-tag">nowrap</span>;            <span class="hljs-selector-tag">li</span> &#123;        <span class="hljs-attribute">display</span>: inline-block;        <span class="hljs-attribute">line-height</span>: <span class="hljs-number">41rem</span> / $model;        <span class="hljs-attribute">font-size</span>: $fontS1;        <span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span> <span class="hljs-number">10px</span>;        &amp;:first-child &#123;        &#125;        &amp;<span class="hljs-selector-pseudo">:last-child</span> &#123;        &#125;        &amp;<span class="hljs-selector-class">.current</span> &#123;          <span class="hljs-attribute">position</span>: relative;          <span class="hljs-attribute">color</span>: <span class="hljs-number">#66cc66</span>;          &amp;:after &#123;            content: '';            <span class="hljs-selector-tag">height</span>: 4<span class="hljs-selector-tag">px</span>;            <span class="hljs-selector-tag">width</span>: 30%;            <span class="hljs-selector-tag">border-radius</span>: 10<span class="hljs-selector-tag">px</span>;            <span class="hljs-selector-tag">background-color</span>: <span class="hljs-selector-id">#66cc66</span>;            <span class="hljs-selector-tag">position</span>: <span class="hljs-selector-tag">absolute</span>;            <span class="hljs-selector-tag">bottom</span>: 0<span class="hljs-selector-class">.15rem</span>;            <span class="hljs-selector-tag">right</span>: 35%;          &#125;        &#125;      &#125;    &#125;  &#125;</code></pre></div><h3 id="JS逻辑"><a href="#JS逻辑" class="headerlink" title="JS逻辑"></a>JS逻辑</h3><div class="hljs"><pre><code class="hljs js">goCenter(guid, index, e) &#123;      <span class="hljs-keyword">let</span> destination = index - <span class="hljs-number">2</span>;      destination = destination &lt; <span class="hljs-number">0</span> ? <span class="hljs-number">1</span> : destination;      <span class="hljs-keyword">this</span>.currentTopNav = guid;      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.navScroll) &#123;        <span class="hljs-keyword">this</span>.navScroll.scrollToElement(          <span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'#topNav li:nth-child('</span> + destination + <span class="hljs-string">')'</span>)        );      &#125;      <span class="hljs-keyword">this</span>.getdata();      <span class="hljs-comment">// 横向滑动居中</span>      <span class="hljs-keyword">let</span> ul = <span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'#topNavUl'</span>);      <span class="hljs-keyword">let</span> nav = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"topNav"</span>);      <span class="hljs-keyword">let</span> window_offsetWidth = <span class="hljs-built_in">window</span>.innerWidth; <span class="hljs-comment">//屏幕宽度;</span>      <span class="hljs-keyword">let</span> dom = e.target;      <span class="hljs-keyword">if</span> (dom) &#123;        <span class="hljs-keyword">let</span> domoffsetWidth = dom.offsetLeft,          <span class="hljs-comment">//中间值 =( 屏幕宽度 - li宽度 ) / 2;</span>          diffWidth = (window_offsetWidth - dom.offsetWidth) / <span class="hljs-number">2</span>,          <span class="hljs-comment">//目标值 = offset - 中间值</span>          targetOffset = -(domoffsetWidth - diffWidth);        <span class="hljs-keyword">let</span> ul_width = ul.getBoundingClientRect().width;<span class="hljs-comment">//开始</span>                <span class="hljs-comment">// 未超出中间值</span>        <span class="hljs-keyword">if</span> (-targetOffset &lt; <span class="hljs-number">0</span>) &#123;          nav.scrollLeft = <span class="hljs-number">0</span>;          <span class="hljs-keyword">return</span>;        &#125;        <span class="hljs-comment">//末尾</span>        <span class="hljs-keyword">if</span>(targetOffset &lt;  window_offsetWidth - ul_width )&#123;          nav.scrollLeft = -(window_offsetWidth - ul_width);          <span class="hljs-keyword">return</span>;        &#125;               <span class="hljs-comment">//正常</span>        nav.scrollLeft = -targetOffset      &#125;     &#125;,</code></pre></div>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发与填坑</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>vue</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>实现触屏桌面端手指滑动</title>
+    <link href="/2019/07/23/2019072301/"/>
+    <url>/2019/07/23/2019072301/</url>
+    
+    <content type="html"><![CDATA[<p>安装 vue-touch 插件</p><div class="hljs"><pre><code class="hljs plain">npm install vue-touch@next --save</code></pre></div><p>main.js中引入</p><div class="hljs"><pre><code class="hljs plain">import VueTouch from &#39;vue-touch&#39;Vue.use(VueTouch, &#123;name: &#39;v-touch&#39;&#125;)</code></pre></div><div class="hljs"><pre><code class="hljs plain">&lt;el-carousel :interval&#x3D;&quot;4000&quot; indicator-position&#x3D;&quot;outside&quot; height&#x3D;&quot;840px&quot; ref&#x3D;&quot;carousel&quot;&gt;  &lt;el-carousel-item v-for&#x3D;&quot;(item,index) in banners&quot; :key&#x3D;&quot;item.url&quot;&gt;    &lt;v-touch :swipe-options&#x3D;&quot;&#123;direction: &#39;horizontal&#39;&#125;&quot; v-on:swipeleft&#x3D;&quot;swiperleft(index)&quot; v-on:swiperight&#x3D;&quot;swiperright(index)&quot; class&#x3D;&quot;wrapper&quot;&gt;    &lt;div class&#x3D;&quot;menu-container&quot; ref&#x3D;&quot;menuContainer&quot;&gt;         &lt;img v-lazy&#x3D;&quot;item.url&quot;&#x2F;&gt;    &lt;&#x2F;div&gt;   &lt;&#x2F;v-touch&gt;  &lt;&#x2F;el-carousel-item&gt;&lt;&#x2F;el-carousel&gt;</code></pre></div><div class="hljs"><pre><code class="hljs plain">methods: &#123;    &#x2F;&#x2F;设置滑动切换轮播图    swiperleft: function (index) &#123;      &#x2F;&#x2F;上一页      this.$refs.carousel.prev();      &#x2F;&#x2F;设置幻灯片的索引      this.$refs.carousel.setActiveItem(index - 1);    &#125;,    swiperright: function (index) &#123;      &#x2F;&#x2F;下一页      this.$refs.carousel.next();      this.$refs.carousel.setActiveItem(index + 1);    &#125;,&#125;,</code></pre></div><p>发现BUG：vue-touch不能上下滑动的问题</p><div class="hljs"><pre><code class="hljs plain">.wrapper &#123;  touch-action: pan-y !important;&#125;</code></pre></div>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发与填坑</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>触屏桌面端</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>实现美团外卖商家中心自动登录</title>
+    <link href="/2019/07/21/2019072101/"/>
+    <url>/2019/07/21/2019072101/</url>
+    
+    <content type="html"><![CDATA[<p>为了满足餐饮多开系统的需求，需要在嵌入页面中获取平台的账号密码dom并赋值操作。</p><div class="hljs"><pre><code class="hljs js"><span class="hljs-comment">// 美团外卖商家中心自动登录工具，https://e.waimai.meituan.com/new_fe/login#/login</span><span class="hljs-keyword">let</span> userName = <span class="hljs-string">'xxxx'</span>;<span class="hljs-keyword">let</span> passWord = <span class="hljs-string">'xxxx'</span>;<span class="hljs-comment">// 修改 iframe 的域名使其变为同源</span><span class="hljs-keyword">let</span> newIframe = <span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'iframe[title=登录模块]'</span>);<span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'iframe'</span>).src = newIframe.src.replace(<span class="hljs-string">'epassport'</span>,<span class="hljs-string">"e.waimai"</span>);<span class="hljs-comment">// 监听 iframe 刷新后加载执行函数</span><span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">'iframe'</span>).onload = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;bindInputDOM(<span class="hljs-string">'input[name=login]'</span>,userName);setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;bindInputDOM(<span class="hljs-string">'input[name=password]'</span>,passWord);<span class="hljs-keyword">let</span> button = newIframe.contentWindow.document.querySelector(<span class="hljs-string">".login__submit"</span>);button.click();&#125;,<span class="hljs-number">100</span>);<span class="hljs-comment">// 使用 原生js 改变 React 的 input DOM</span><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bindInputDOM</span>(<span class="hljs-params">name, val</span>) </span>&#123;<span class="hljs-keyword">let</span> Input = newIframe.contentWindow.document.querySelector(name);<span class="hljs-keyword">let</span> lastInput = Input.value;Input.value = val;<span class="hljs-keyword">let</span> event = <span class="hljs-keyword">new</span> Event(<span class="hljs-string">'input'</span>, &#123; <span class="hljs-attr">bubbles</span>: <span class="hljs-literal">true</span> &#125;);<span class="hljs-comment">// hack React15</span>event.simulated = <span class="hljs-literal">true</span>;<span class="hljs-comment">// hack React16 内部定义了descriptor拦截value，此处重置状态</span><span class="hljs-keyword">let</span> tracker = Input._valueTracker;<span class="hljs-keyword">if</span> (tracker) &#123;  tracker.setValue(lastInput);&#125;Input.dispatchEvent(event);&#125;&#125;</code></pre></div><p>如果该平台使用的是vue框架的话就更简单了。</p><div class="hljs"><pre><code class="hljs js"><span class="hljs-comment">// 使用 原生js 改变 vue 的 input DOM</span><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bindInputDOM</span>(<span class="hljs-params">name, val</span>) </span>&#123;    <span class="hljs-keyword">let</span> Input = <span class="hljs-built_in">document</span>.querySelector(name);    <span class="hljs-keyword">let</span> event = <span class="hljs-built_in">document</span>.createEvent(<span class="hljs-string">'HTMLEvents'</span>)    event.initEvent(<span class="hljs-string">'input'</span>, <span class="hljs-literal">false</span>, <span class="hljs-literal">true</span>)    Input.value = val;<span class="hljs-comment">// 修改用户名输入框的值</span>    Input.dispatchEvent(event);<span class="hljs-comment">// 手动触发输入框的input事件</span>&#125;</code></pre></div>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发与填坑</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>美团</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>《塞尔达传说：旷野之息》评测：愿你出走半生，归来仍是少年</title>
+    <link href="/2019/02/18/saierdachuanshuo/"/>
+    <url>/2019/02/18/saierdachuanshuo/</url>
+    
+    <content type="html"><![CDATA[<p>历时5个多月，180+小时，终于通关了。不愧是传说中的满分游戏，重新定义了开放世界游戏，更难得的是于无声处听惊雷，游戏经验越丰富越能体会到游戏设计的精妙之处。</p><p>作为一名游戏老玩家，在游玩N多游戏后，很难再有一款游戏能打动我了，虽然偶尔会遇到一两款让人眼前一亮的游戏，但也仅仅是眼前一亮罢了。</p><p>而野吹（塞尔达传说：旷野之息，下同）则不同。它是一款能让我一直处于心灵震荡中的游戏，没错，是一直。从进入游戏开始，到游玩的第182个小时，基本上每时每刻都能收获到一些新的惊喜和触动。</p><p>从采集、打怪、解谜，再到烹饪、攀爬，骑射、滑雪。尤其是野吹中不得不提的“化学”引擎，这里的化学，应当解释为通过组合游戏内的自然与非自然的现象及物品，会产生各种奇妙的反馈，类似于化学反应。如游戏中的水、火、风、雷等自然现象，遇上电磁感应、质量守恒、引力等游戏中真实存在的物理定律，再加上游戏中特有的魔法科技、冰冻、炸弹、磁力、时停等可以组合成千变万化的操作和技巧，制造出各种匪夷所思的陷阱。</p><iframe src="//player.bilibili.com/player.html?aid=19524671&bvid=BV1tW411E7MM&cid=31838783&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe><p>除了上述的游戏系统外，野炊的细节也是精细让人惊讶，如果细心观察的话，游戏的每个生命都有着自己的生活轨迹。如日出而作、日落而息、下雨时会躲雨、看见怪物会跑的村民；会打猎、会跳舞、会睡觉、会恋爱、对陌生事物好奇的怪物们等等。</p><p>游戏的主线剧情很简单，也是任天堂的经典套路，打魔王救公主，如果你够强的话，可以直接一开始就直奔魔王所在的城堡打败魔王，拯救公主，结束游戏。只要你够快，半个多小时就能结束游戏。这也是我非常推崇的一点，所谓的开放世界，并不只是地图大、去除空气墙、搜集要素多，真正的开放，是将游戏开放给玩家，让玩家来做出各种选择。</p><p>在野吹中，林克就是你自己。</p><p><strong>小白林克</strong></p><p>你从未玩过任何游戏，那么你的林克就和游戏初始设定一样，一张白纸，是个已经失忆一百多年的人，这个世界无论对你还是对于林克来说，一切都是陌生的，甚至连走路，前进后退、跳跃都不会，真真正正的游戏小白。</p><p>但随着时间的推移，你开始学习，开始成长、学会爬树、捉鱼、布置陷阱、烹饪。学会了如何和敌人进行战斗，学会正面刚、半夜趁敌人睡着后偷袭、隐藏在树上或者石头后用弓箭射击。你的武器五花八门，单手剑、双手剑、锤子、长枪、甚至拿着锄头、粪叉、钉耙等农具武器。</p><p>在经历过无数的失败和死亡后，你最终成长为了一个合格的英杰和勇者，虽然受制于你的游戏天赋，不一定像一百年前的林克那么强大，So what? 只要你有着不畏惧失败的勇气和信念，灾厄盖侬？不过是土鸡瓦狗罢了。</p><p><strong>流氓林克</strong></p><p>如果你是游戏达人、游玩过很多游戏，那么你手下的林克，就是一个虽然失忆却武功高强的高手。类比于《谍影重重》里的杰森·伯恩，《庆余年》里的五竹，虽然对这个世界很陌生，但凭借强大游戏本能，很快你就能适应下来，并活的很潇洒。</p><p>什么酒后怒杀半人马、血夜屠杀波克布林，山谷单挑无数守护者，世人传颂的海拉鲁大流氓，说的就是你。或许凭借着强大的游戏技术，你的实力远远超过百年前的林克。但你却不是英杰，因为你没有一颗勇者的心。当然或许你本人也不太想当勇者，拯救公主、世界什么的你也没兴趣。因此当有一天你决定去拯救公主，流氓林克也就变成了英杰林克，而且还是历代最强的林克。</p><p><strong>二代目林克</strong></p><p>如果你是已经通关后游戏玩家，再次重新开始游戏，准备创造新的传奇的话。那么你手下的林克，就是从未失忆的巅峰林克，什么公主魔王的都不重要，毕竟你的挚爱可是米法，对吧。</p><p>既然重活一世，你的追求应当完全抛弃剧情。这一世你可能是一个美食家，收集世界上各类食材、普通的、稀少的、顶尖的，做出各种的美味食物，直至做出一道天下第一的食物。</p><p>也有可能你是个怪物猎人、宝石猎人、宝物猎人，也可能是一个出色的冒险家、航海家，在每个或美丽、或神秘、或危险的地方都一一留下你的印记。</p><p><strong>野炊在我看来不是一款游戏，而是一段人生、一段我少年时梦寐以求的人生，愿你我出走半生，归来仍是少年。</strong></p><iframe src="//player.bilibili.com/player.html?aid=90686044&bvid=BV1F7411A76k&cid=154867064&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>]]></content>
+    
+    
+    <categories>
+      
+      <category>游戏杂谈</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>游戏</tag>
+      
+      <tag>评测</tag>
+      
+      <tag>勇者</tag>
+      
+      <tag>塞尔达传说</tag>
+      
+      <tag>开发世界</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Android微信支付返回码-1之坑（首次调用成功第二次失败）</title>
+    <link href="/2019/01/24/2019012401/"/>
+    <url>/2019/01/24/2019012401/</url>
+    
+    <content type="html"><![CDATA[<h3 id="环境背景"><a href="#环境背景" class="headerlink" title="环境背景"></a>环境背景</h3><p>IDE: HBuilder</p><p>框架：mui、jquery</p><p>ios、android多端混合app项目</p><p>android打包使用DClound公用证书</p><h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>android调用微信支付通道，errCode返回值为-1 </p><p>新装用户第一次调用成功，第二次及之后调用失败（在系统中把微信的缓存清理之后还是第一次可以之后不行）</p><h3 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h3><p>检查打包后apk文件的包名、应用签名，发现与微信开放平台的数据不符，修改后成功调用</p><h4 id="1查看apk文件包名"><a href="#1查看apk文件包名" class="headerlink" title="1查看apk文件包名"></a>1查看apk文件包名</h4><p>使用【雷电模拟器】安装apk文件，接着在【文件管理】中查看</p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20190124/1.png" srcset="/img/loading.gif" alt="image"></p><h4 id="2-查看apk应用签名"><a href="#2-查看apk应用签名" class="headerlink" title="2.查看apk应用签名"></a>2.查看apk应用签名</h4><p>使用微信官方的签名工具</p><p>签名工具下载地址<a href="https://open.weixin.qq.com/zh_CN/htmledition/res/dev/download/sdk/Gen_Signature_Android.apk" target="_blank" rel="noopener">https://open.weixin.qq.com/zh_CN/htmledition/res/dev/download/sdk/Gen_Signature_Android.apk</a></p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20190124/2.png" srcset="/img/loading.gif" alt="image"></p><h4 id="3-查看微信开放平台的应用信息并修改为刚拿到信息"><a href="#3-查看微信开放平台的应用信息并修改为刚拿到信息" class="headerlink" title="3.查看微信开放平台的应用信息并修改为刚拿到信息"></a>3.查看微信开放平台的应用信息并修改为刚拿到信息</h4><p>微信开发平台-管理中心-应用详情</p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20190124/3.png" srcset="/img/loading.gif" alt="image"></p><h4 id="4-完成"><a href="#4-完成" class="headerlink" title="4.完成"></a>4.完成</h4>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发与填坑</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>mui</tag>
+      
+      <tag>android</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>现实</title>
+    <link href="/2018/05/19/2018051901/"/>
+    <url>/2018/05/19/2018051901/</url>
+    
+    <content type="html"><![CDATA[<p>现实</p><p>有人说社会黑暗</p><p>世界不公</p><p>可我看到的却并不如此</p><p>没有终日的黑夜</p><p>也没有长久的光明</p><p>有的只是昼夜交替</p><p>四时轮回</p><p>你们都说现实</p><p>我却说</p><p>实现</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>诗词歌赋</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>解决 HBuilder (MUI) 下无法打包 iOS（使用苹果证书）的 ipa文件，适用于Xcode9</title>
+    <link href="/2018/01/15/2018011501/"/>
+    <url>/2018/01/15/2018011501/</url>
+    
+    <content type="html"><![CDATA[<p>最近用 MUI 开发了一款跨平台的 APP 应用，除去各种坑、社区冷漠脸之外，还是挺好用的，特别是它 IDE 提供的云打包，可以一键打包 Android、ios 安装包。</p><p>但是最近打包时，一直提示 31015 编译错误，刚开始以为是官方又抽风了，因为有过前科，所以也没多想。第二天发现问题依然存在，这才意识到！！！早上出门后是不是忘记锁门了？咳咳，回到问题，几番谷歌后，发现原来是 Xcode 9 的锅。</p><p><strong>测试环境：</strong></p><p>HBuilder v.8.9.1<br>MUI<br>Xcode 9<br>Macbook Air</p><p>问题描述，使用 HBuilder 提供的云打包，ios带苹果证书。具体提示为：</p><p><code>BuildConfigure Failed 31015 编译错误 Xcode managed, but signing settings require a manually managed profile</code></p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20180115/01.jpg" srcset="/img/loading.gif" alt=""><br><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20180115/02.jpg" srcset="/img/loading.gif" alt=""></p><p>从错误提示来看，应该是 Xcode 签名配置问题，联想之前刚更新Xcode 9 ，所以搜索重点放在了 Xcode 9 签名配置上。</p><p>结果显示 Xcode 9 取消了之前的手动签名，而是改成了自动签名。下面是官方提供的解决文档：</p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20180115/03.jpg" srcset="/img/loading.gif" alt=""><br><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20180115/04.jpg" srcset="/img/loading.gif" alt=""><br><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20180115/05.jpg" srcset="/img/loading.gif" alt=""></p><p>至此，Xcode 9 签名的问题就解决了。但是！！！由于项目中使用的是 HBuilder 提供的云打包，而打包过程中是无法操作 Xcode 9 的，所以解决方案又有些区别。</p><p>不过不用担心，既然已经知道是签名的问题，所以只要到 iOS 开发者平台上重新生成一张带自动签名的证书就行了。而这个证书就是 HBuilder 云打包所用到的 profile 文件，选择Xcode iOS Wildcard App ID（***），保存，下载。</p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20180115/06.jpg" srcset="/img/loading.gif" alt=""><br><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20180115/07.jpg" srcset="/img/loading.gif" alt=""><br><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20180115/08.jpg" srcset="/img/loading.gif" alt=""></p><p><strong>参考链接：</strong></p><p><a href="http://www.cnblogs.com/yajunLi/p/7081150.html" target="_blank" rel="noopener">1、Xcode9新特性介绍-中文篇</a><br><a href="https://developer.apple.com/library/content/qa/qa1814/_index.html#//apple_ref/doc/uid/DTS40014030" target="_blank" rel="noopener">2、设置Xcode来自动管理您的配置文件</a><br><a href="http://help.apple.com/xcode/mac/current/#/dev23aab79b4" target="_blank" rel="noopener">3、Assign a project to a team</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发与填坑</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>MUI</tag>
+      
+      <tag>iOS</tag>
+      
+      <tag>Xcode9</tag>
+      
+      <tag>APP</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>《仙剑奇侠传》评测：少年郎，就当鲜衣怒马仗剑天涯</title>
+    <link href="/2017/06/18/xianjianqixiazhuan/"/>
+    <url>/2017/06/18/xianjianqixiazhuan/</url>
+    
+    <content type="html"><![CDATA[<p>仙剑（仙剑奇侠传，下同），这里的仙剑不单指仙剑奇侠传一，而是代表了一个系列，一个被誉为国产三剑之一的仙剑奇侠传系列。另外两剑则是，轩辕剑系列和剑侠情缘系列，同样是不可多得经典游戏。有机会可以接触下，这里就不多做说明。</p><p>仙剑系列正统续作共有8部，分别是仙剑1、2、3、仙剑3外传问情篇、仙剑4、5、仙剑5前传、仙剑6。从1995年7月大宇发售仙剑1开始，仙剑系列已经走过22个年头了。仙剑1横空出世时，对当时的游戏市场震动是非常大的，拿奖拿到手软。不说国内，就算是拿到世界范围内去比较，仙剑1也是属于最顶尖的一类，不虚任何游戏，在看看如今的国产游戏，让人唏嘘啊。</p><p>不过仙剑系列我并没有全部玩过，就只玩过仙剑1、3还有仙剑4。仙剑1讲的是宿命，仙剑3讲的轮回、仙剑4则是寻仙。</p><p>有趣的是，如果让玩家们给仙剑系列排个序，绝大多数的人所选择的前3名，就是我所玩的这三款。至于谁前谁后，那就仁者见仁智者见智了。当然，对于我来说，心目中的第一名应为仙剑1，仙剑4、仙剑3则相次之。</p><p><strong>仙剑奇侠传1</strong></p><p>横向比较这三款游戏在同时代的地位，毫无疑问仙剑1是最为辉煌的。相反仙剑3、4在同时代的情况，单拿国内来说还行，但在世界范围上就远不能及了。</p><p>就算是纵向来比较，仙剑一也是最让我能代入进去的游戏，无论是游戏中的对话、衣着、人设还是剧情，都有一种真实感。这种真实感来自于仙剑1中所展现出来的那种古代的陈旧感和典雅感。结合从各类历史书籍、武侠小说中了解到的一些古代细节和背景，会有一种熟悉感，让你相信自己就是在那个时代的，就这一点，仙剑系列的其他作品就落了下层。</p><p>而当你代入进游戏后，一切便水到渠成了。自己就是李逍遥，一个从整天幻想当大侠的浪荡少年，到最终执掌蜀山剑派的掌门人。</p><p>随着游戏的进程，一路在成长，得到的很多，失去的却更多。实力虽然越来越强，但身边重要的人却一个接一个的牺牲，月如、灵儿，直至最终牺牲了自己成为了蜀山掌门，守护众生、成就大爱。时隔多年每次看到这句：<strong>一起吃到老，玩到老。</strong>还是会有一种莫名的心悸和惆怅。</p><p><strong>仙剑奇侠传4</strong></p><p>得力于时代的进步，仙剑4的画风要比仙剑1、3强了不少。慕容紫英刚出场时的绝世剑仙风采，浪漫绚丽的即墨灯会。但可惜的是，仙剑4总有一种疏远感，虽然剧情很动人，但你却总像个局外人，看着游戏中的世事变迁，很好，却不真实。</p><p>就如同游戏中的大boss玄霄一样、很酷、很炫、但有一种高高在上的感觉，让你并不能对他们感同身受。这一点从仙剑4结尾处也能体现出来，游戏借慕容紫英的口说出的：<strong>人生一场虚空大梦，韶华白首，不过转瞬。惟有天道恒在，往复循环，不曾更改。</strong></p><p> 我想，这其中的区别或许就是因为仙剑4所讲的主要是仙，而仙剑1更多的是讲人吧。</p><p> <strong>仙剑奇侠传3</strong></p><p> 仙剑3在游戏性上做了很多创新，比如鉴宝考古、魔剑养成、五灵阵法。剧情上也不错，世界观也很庞大，完整的构建出了六界众生、人、妖、魔、鬼、仙、神。但总感觉少了点什么，又说不出来，可能就只是画风不喜欢吧。</p><p>对于仙剑系列来说，其历代核心莫过于四大天王：剧情、迷宫、诗词、音乐。</p><p>仙剑的传统艺能是“虐心”，这一点在剧情和迷宫上被执行的最为完美。如果说剧情只是让你心伤，那么迷宫绝对就是让你吐血的存在。比如传说中历代最难的迷宫——仙剑3外传之<del>问情</del>问路篇的少阳参天和盘古之心地图，手动狗头，哈哈。</p><p>还好仙剑中的音乐和诗词起到了很好缓解作用，对我来说，仙剑音乐启迪了我对国风音乐的喜爱，蝶恋、御剑江湖、回梦游仙、莫失莫忘，每次听到这些音乐都能勾起我对江湖无限的畅想。</p><p>而仙剑诗词，虽谈不上格律精准，但胜在情真意切。如赵灵儿的那首既不回头，不知感动了多少个懵懂少年郎。还有在那十里坡的月色下，醉道士舞过剑后，口吟诗句，乘风而走：</p><p>御剑乘风来，除魔天地间。</p><p>有酒乐逍遥，无酒我亦颠。</p><p>一饮尽江河，再饮吞日月。</p><p>千杯醉不倒，唯我酒剑仙。</p><p>这份畅快和潇洒，才是鲜衣怒马、仗剑江湖该有的风采。</p><iframe src="//player.bilibili.com/player.html?aid=84571260&bvid=BV147411e7ZW&cid=144624152&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>]]></content>
+    
+    
+    <categories>
+      
+      <category>游戏杂谈</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>游戏</tag>
+      
+      <tag>评测</tag>
+      
+      <tag>勇者</tag>
+      
+      <tag>仙剑奇侠传</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hexo深坑之旅（5）—Materia主题优化</title>
+    <link href="/2017/05/01/2017050101/"/>
+    <url>/2017/05/01/2017050101/</url>
+    
+    <content type="html"><![CDATA[<meta name="referrer" content="no-referrer" /><blockquote><p><strong>前言：</strong>上一次已经将hexo成功部署到了Mac上，接着就该选择主题了。之前在Windows上采用的是 <a href="https://github.com/wuchong/jacman" target="_blank" rel="noopener">jacman主题</a>，而这一次在<a href="https://hexo.io/themes/" target="_blank" rel="noopener">Hexo官网主题库</a>中发现了一个更为精美的主题—— <a href="https://github.com/viosey/hexo-theme-material" target="_blank" rel="noopener">Materia</a></p></blockquote><p><strong>文章须知：</strong><br>在 Hexo 中，通常有两份配置文件，一个是站点根目录下的 _config.yml；另外一个是主题目录下的 _config.yml。为了描述方便，在以下说明中，将前者称为 站点配置文件，后者称为 主题配置文件。<br>此外推荐阅读<a href="https://hexo.io/docs/" target="_blank" rel="noopener">hexo官方文档</a>和<a href="https://material.viosey.com/" target="_blank" rel="noopener">Materia官方文档</a>，本文更多的对于前两者的补充和解释。</p><h2 id="安装Materia"><a href="#安装Materia" class="headerlink" title="安装Materia"></a>安装Materia</h2><h3 id="方法一：Github"><a href="#方法一：Github" class="headerlink" title="方法一：Github"></a>方法一：Github</h3><p>你可以在 Github 下载 <a href="https://github.com/viosey/hexo-theme-material/releases" target="_blank" rel="noopener">稳定的发布版本</a>。</p><h3 id="方法二：NPM"><a href="#方法二：NPM" class="headerlink" title="方法二：NPM"></a>方法二：NPM</h3><p>打开终端，cd  到 hexo 所在的目录，执行命令：</p><div class="hljs"><pre><code class="hljs plain">$ npm install hexo-material</code></pre></div><p>安装完毕后，首先在 hexo 目录下的 themes 文件夹中新建一个文件夹 material ，之后在 hexo 目录下的 node_modules 文件夹中找到 hexo-material 文件夹，然后把里面的全部文件复制到 materia 文件夹里。</p><div class="hljs"><pre><code class="hljs plain">hexo目录结构：|-- _config.yml|-- node_modules|-- package.json|-- scaffolds|-- scripts|-- source   |-- _drafts   |-- _posts|-- themes</code></pre></div><p><strong>注意！！！</strong><br>需要将 materia 主题下的配置文件 _config.template.yml 重命名为<br> _config.yml。<br>然后打开<strong>站点配置文件</strong>，查找 theme 参数并修改为 materia </p><div class="hljs"><pre><code class="hljs plain">theme: material</code></pre></div><p>查找 language 参数并修改为 zh-CN</p><div class="hljs"><pre><code class="hljs plain">language: zh-CN</code></pre></div><p>现在，运行 <code>$ hexo s</code> 并访问 <a href="http://localhost:4000" target="_blank" rel="noopener">http://localhost:4000</a> 确保站点正确运行。</p><h2 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h2><p><strong>!!!注意</strong></p><ul><li>Material 主题中相对应的图标可在 <a href="https://material.io/icons/" target="_blank" rel="noopener">Material icons</a> 查询。</li></ul><ul><li>Material 主题中图片调用地址为 /source/img/ 例：<code>&quot; /img/favicon.png &quot;</code></li></ul><div class="hljs"><pre><code class="hljs plain">Material 主题配置文件（节选）# Head infohead:    favicon: &quot;&#x2F;img&#x2F;favicon.png&quot; #网站的 favicon    high_res_favicon: &quot;&#x2F;img&#x2F;favicon.png&quot;  #高清 favicon    apple_touch_icon: &quot;&#x2F;img&#x2F;favicon.png&quot; #iOS 主屏按钮图标    keywords: blog web 前端 #网站关键词# Jump Links Settingsurl:    rss:   #设置生成的 rss 或 atom url    daily_pic: &quot;https:&#x2F;&#x2F;zhouxiaoyu1994.github.io&#x2F;FCC2017&#x2F;resume&#x2F;index.html&quot;  #设置 daily_pic 模块 点击时跳转的 url    logo: &quot;https:&#x2F;&#x2F;github.com&#x2F;zhouxiaoyu1994&quot;  #设置 logo 点击时跳转的 url# ---------------------------------------------------------------# Style Settings# ---------------------------------------------------------------# Schemes scheme: Paradox #主题外观（默认）#scheme: Isolation  #主题外观（极简）# UI &amp; UX: slogan, color, effectuiux:    slogan: &quot;前端作品集&quot;  #显示在 blog_info 模块中的标语，你可以设置单行标语或者多行标语：    theme_color: &quot;#0097A7&quot;  #主题主要颜色。主题的大部分地方使用此颜色。    theme_sub_color: &quot;#00838F&quot; #主题辅助颜色。    hyperlink_color: &quot;#00838F&quot; #超链接颜色。    button_color: &quot;#757575&quot; #按钮颜色，例如 toTop 或 menu_button。    android_chrome_color: &quot;#0097A7&quot; #安卓 Chrome 浏览器的地址栏颜色。    nprogress_color: &quot;#29d&quot; #页面加载时顶部加载进度条的颜色。    nprogress_buffer: &quot;800&quot; #页面加载时顶部加载进度条的缓冲时间。# JS Effect Switchesjs_effect: #用来控制 Material 主题中自带的多种 js 特性。    fade: true #页面加载时部分模块的渐显效果，默认为 true。    smoothscroll: false #页面平滑滚动特效，默认为 false。# Reading experiencereading: #用于设置阅读体验。    entry_excerpt: 80 #首页文章输出摘要的字符长度。默认为 80。# Thumbnail Settingsthumbnail:    purecolor: #填入颜色代码。如果文章内无设置缩略图，此项又不为空，则使用纯色缩略图。    random_amount: 19 #随机图片数量，根据 主题所在文件夹&#x2F;source&#x2F;img&#x2F;random 中的图片数量设置。Material 主题默认提供了 19 张 Material 风格的缩略图。# Background Settings# bing available parameter:#     new | color&#x3D; | type&#x3D;#         color available value: black, blue, brown, green, multi, orange, pink, purple, red, white, yellow#         type available value: A (animal), C (culture), N (nature), S (space), T (travel)background:    #purecolor: &quot;#F5F5F5&quot; #填入颜色代码。则站点使用纯色背景。    bgimg: &quot;&#x2F;img&#x2F;bg.png&quot; #背景地址，默认调用 主题文件夹 -&gt; source -&gt; img 中的 bg.png。可更换此图片或者自己填入 url。    bing: #用于启用“必应美图”的图片作为背景。        enable: false        parameter:# Images Settingsimg:    logo: &quot;&#x2F;img&#x2F;logo.png&quot; #显示于 blog_info 模块中。    avatar: &quot;&#x2F;img&#x2F;avatar.png&quot;  #你的头像设置。    daily_pic: &quot;&#x2F;img&#x2F;daily_pic.png&quot;     #显示于 daily_pic 模块中。    sidebar_header: &quot;&#x2F;img&#x2F;sidebar_header.png&quot;   #显示于 sidebar 顶部。    footerico: &quot;&#x2F;img&#x2F;footer&#x2F;footer_ico-&quot;    #设置 footer 中 SNS 图标的路径。    random_thumbnail: &quot;&#x2F;img&#x2F;random&#x2F;material-&quot;   #随机缩略图的路径。    footer_image:   #你可以在侧边栏底部放置任何你想要的图片。        #upyun_logo:            #link: &quot;https:&#x2F;&#x2F;www.upyun.com&#x2F;&quot;            #src: &quot;&#x2F;img&#x2F;upyun_logo.svg&quot;# Custom Fonts #用于设置站点的字体。fonts: Roboto, &quot;Helvetica Neue&quot;, Helvetica, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, &quot;微软雅黑&quot;, Arial, sans-serif# Card Elevation Level  card_elevation: 2   #用来设置主题卡片阴影。# ---------------------------------------------------------------# Menu Settings# ---------------------------------------------------------------# SNS Menusns:    #用于填写你的 SNS 信息，其中 email 会显示在侧边栏，其他信息会以按钮的形式显示在 footer。    email: 363993481@qq.com    facebook:     twitter:     googleplus:     instagram:    tumblr:    bilibili:    telegram:    weibo: &quot;http:&#x2F;&#x2F;weibo.com&#x2F;p&#x2F;1005055736438053&#x2F;home?from&#x3D;page_100505&amp;mod&#x3D;TAB&amp;is_all&#x3D;1#place&quot;    github: &quot;https:&#x2F;&#x2F;github.com&#x2F;zhouxiaoyu1994&quot;    linkedin: &quot;http:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;%E4%BF%8A%E9%98%B3-%E5%91%A8-811333136&#x2F;&quot;    zhihu: &quot;https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;zhou-xiao-yu-1994&#x2F;activities&quot;    jianshu: &quot;http:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;87b03448aa56&quot;# SNS Share Switchsns_share:  #用于定义分享菜单中的项目， false 的项将不会显示在分享菜单中。    twitter: true    facebook: true    googleplus: false    weibo: true    linkedin: true    qq: true    telegram: false# Sidebar Customizesidebar:    dropdown:   #用于设置 Paradox 侧边栏用户下拉菜单，默认为空。        Email Me:            link: &quot;mailto:363993481@qq.com&quot;            icon: email        简书:            link: &quot;http:&#x2F;&#x2F;www.jianshu.com&#x2F;u&#x2F;87b03448aa56&quot;            icon: book        Linkedin:            link: &quot;http:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;%E4%BF%8A%E9%98%B3-%E5%91%A8-811333136&#x2F;&quot;            icon: Linkedin    homepage:        use: true #设置 true 时会在侧边栏显示 “主页” 按钮.        icon: home  #在 “主页” 前面显示一个 Material 图标。为空和被注释时则不显示.        divider: false    archives:        use: true        icon: inbox        divider: false    categories:        use: true        icon: chrome_reader_mode        divider: false       pages:        标签云:  #该独立页面的名称，请自行修改。            link: &quot;&#x2F;tags&quot;   #link 的参数为相对路径，对应 hexo 目录下的 source 文件夹内的相应文件夹。            icon: cloud   #icon 的参数为自定义的 Material 图标，可用图标可在 Material icons 查询。            divider: false  #设置成 true 后会在该条目底部增加一条分割线        映像:            link: &quot;&#x2F;gallery&quot;            icon: images            divider: false        前端作品集:            link: &quot;https:&#x2F;&#x2F;zhouxiaoyu1994.github.io&#x2F;FCC2017&#x2F;resume&#x2F;index.html&quot;            icon:             divider: false        友情链接:            link: &quot;&#x2F;links&quot;            icon:             divider: false    article_num:  #在主题的侧边栏显示文章总数。        use: false #设置成 true 时会在侧边栏显示文章总数。        divider: false    footer:   #配置侧边栏的底部        divider: false        theme: false  #设置成 true 后会在侧边栏底部增加一个指向 Material 主题的链接。        support: false        feedback: false        material: false# Qrcode for redirect at other deviceqrcode: true  #用于在文章页中显示二维码，扫描二维码即可直接打开文章。需要 hexo-helper-qrcode 支持，使用 npm install hexo-helper-qrcode --save 进行安装。</code></pre></div><h2 id="插件拓展"><a href="#插件拓展" class="headerlink" title="插件拓展"></a>插件拓展</h2><h4 id="友情链接"><a href="#友情链接" class="headerlink" title="友情链接"></a>友情链接</h4><p>Material 主题自带有友情链接模块 links</p><h5 id="创建页面"><a href="#创建页面" class="headerlink" title="创建页面"></a>创建页面</h5><p>在 hexo 目录下的 source 文件夹内创建一个名为 links（只是建议，可根据自己喜好修改）的文件夹。<br>然后在文件内创建一个名为 index.md 的 Markdown 文件。<br>在 index.md 文件内写入如下内容即可。</p><div class="hljs"><pre><code class="hljs plain">---title: linksdate:layout: links---</code></pre></div><p> <strong>!!!注意：</strong> <code>title 可修改，layout 不可修改。</code></p><h5 id="添加数据"><a href="#添加数据" class="headerlink" title="添加数据"></a>添加数据</h5><p>同样在在 hexo 目录下的 source 文件夹内创建一个名为 _data（禁止改名）的文件夹。然后在文件内创建一个名为 links.yml 的文件。<br>在  links.yml 文件内写入如下内容即可。</p><div class="hljs"><pre><code class="hljs plain">Name:    #将 Name 改为友情链接的名字，例如 Viosey。    link: http:&#x2F;&#x2F;example.com  #友情链接的地址。    avatar: http:&#x2F;&#x2F;example.com&#x2F;avatar.png   #友情链接的头像。    descr: &quot;这是一个描述&quot;   #为友情链接描述。</code></pre></div><p>添加多个友情链接，只需要根据上面的格式重复填写即可。</p><h5 id="修改主题配置"><a href="#修改主题配置" class="headerlink" title="修改主题配置"></a>修改主题配置</h5><p>打开主题配置文件，在 pages 参数下写入如下内容：</p><div class="hljs"><pre><code class="hljs plain">pages:        友情链接:            link: &quot;&#x2F;links&quot;            icon:             divider: false</code></pre></div><h4 id="图库"><a href="#图库" class="headerlink" title="图库"></a>图库</h4><p>Material 主题自带有图库模块 gallery</p><h5 id="创建页面-1"><a href="#创建页面-1" class="headerlink" title="创建页面"></a>创建页面</h5><p>在 hexo 目录下的 source 文件夹内创建一个名为 gallery（只是建议，可根据自己喜好修改）的文件夹。然后在文件内创建一个名为 index.md 的 Markdown 文件。<br>在 index.md 文件内写入如下内容即可。</p><div class="hljs"><pre><code class="hljs plain">---title: gallerydate:layout: gallery---</code></pre></div><h5 id="添加数据-1"><a href="#添加数据-1" class="headerlink" title="添加数据"></a>添加数据</h5><p>同样在在 hexo 目录下的 source 文件夹内创建一个名为 _data（禁止改名）的文件夹。然后在文件内创建一个名为 gallery.yml 的文件。<br>在 gallery.yml 文件内写入如下内容即可。</p><div class="hljs"><pre><code class="hljs plain">Name:   #图片名字，例如 Materialfull_link: http:&#x2F;&#x2F;example.com&#x2F;full-image.png  #为完整图片的地址。thumb_link: http:&#x2F;&#x2F;example.com&#x2F;thumb-image.png  #为图片缩略图的地址，如果没有缩略图也可使用完整图片的地址。descr: &quot;这是一个描述&quot;    #图片描述。</code></pre></div><h5 id="修改主题配置-1"><a href="#修改主题配置-1" class="headerlink" title="修改主题配置"></a>修改主题配置</h5><p>打开主题配置文件，在 pages 参数下写入如下内容：</p><div class="hljs"><pre><code class="hljs plain">图库:   #可改名       link: &quot;&#x2F;gallery&quot;       icon: images       divider: false</code></pre></div><p><strong>!!!注意</strong> <strong>!!!注意</strong> <strong>!!!注意</strong><br>之前按照这样设置完图库模块后，发现不能正确加载图片的缩略图。<br><img src="http://upload-images.jianshu.io/upload_images/2031241-d3a9c0b0a5a24bdb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="img.png"><br>去Material主题 <a href="https://blog.viosey.com/" target="_blank" rel="noopener">官方demo</a> 查看、对比了一番，发现是因为缺少了一些CSS样式。<br><img src="http://upload-images.jianshu.io/upload_images/2031241-60038a71abcd56c7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="img1.png"><br>知道问题后就比较简单了，首先找到生成<br> gallery 页面的文件（/material/layout/_widget/page-gallery.ejs）。<br>打开文件，在添加相应css代码：<code>style=&quot;cursor: pointer;outline: 0px;display: block;background-image: url(&lt;%= site.data.gallery[i].thumb_link %&gt;);&quot;</code></p><div class="hljs"><pre><code class="hljs plain">&lt;!-- Main --&gt;        &lt;div id&#x3D;&quot;main&quot;&gt;            &lt;% if (site.data.gallery) &#123; %&gt;                &lt;% for (var i in site.data.gallery) &#123; %&gt;                    &lt;article class&#x3D;&quot;thumb&quot;&gt;                        &lt;a href&#x3D;&quot;&lt;%&#x3D; site.data.gallery[i].full_link %&gt;&quot; class&#x3D;&quot;image lazy&quot; data-original&#x3D;&quot;&lt;%&#x3D; site.data.gallery[i].thumb_link %&gt;&quot; style&#x3D;&quot;cursor: pointer;outline: 0px;display: block;background-image: url(&lt;%&#x3D; site.data.gallery[i].thumb_link %&gt;);&quot;&gt;&lt;img class&#x3D;&quot;lazy&quot; data-original&#x3D;&quot;&lt;%&#x3D; site.data.gallery[i].thumb_link %&gt;&quot; alt&#x3D;&quot;&lt;%&#x3D; i %&gt;&quot; &#x2F;&gt;&lt;&#x2F;a&gt;                        &lt;h2&gt;&lt;%&#x3D; i %&gt;&lt;&#x2F;h2&gt;                        &lt;p&gt;&lt;%&#x3D; site.data.gallery[i].descr %&gt;&lt;&#x2F;p&gt;                    &lt;&#x2F;article&gt;                &lt;% &#125; %&gt;            &lt;% &#125; %&gt;        &lt;&#x2F;div&gt;</code></pre></div><h4 id="标签云"><a href="#标签云" class="headerlink" title="标签云"></a>标签云</h4><p>Material 主题自带有标签云模块 tags</p><h5 id="创建页面-2"><a href="#创建页面-2" class="headerlink" title="创建页面"></a>创建页面</h5><p>在 hexo 目录下的 source 文件夹内创建一个名为 tags（只是建议，可根据自己喜好修改）的文件夹。然后在文件内创建一个名为 index.md 的 Markdown 文件。<br>在 index.md 文件内写入如下内容即可。</p><div class="hljs"><pre><code class="hljs plain">---title: tagsdate:layout: tags---</code></pre></div><h4 id="topPost"><a href="#topPost" class="headerlink" title="topPost"></a>topPost</h4><p>使用该插件可以将指定文章置顶。需要按照先下载安装 <code>$ npm install hexo-helper-post-top --save</code><br>之后在您需要置顶文章的 .md 中，添加 top: true 即可置顶。</p><h4 id="本地搜索"><a href="#本地搜索" class="headerlink" title="本地搜索"></a>本地搜索</h4><p>使用本地搜索需要安装 <a href="https://github.com/PaicHyperionDev/hexo-generator-search" target="_blank" rel="noopener">hexo-generator-search</a> 插件。<br>然后在 <strong>站点配置文件</strong>中添加</p><div class="hljs"><pre><code class="hljs plain">search:path: search.xmlfield: all</code></pre></div><h4 id="不蒜子"><a href="#不蒜子" class="headerlink" title="不蒜子"></a>不蒜子</h4><p>使用 不蒜子 浏览次数统计，仅需在 主题配置文件 中将 busuanzi: enable: 的值设置为 true。</p><div class="hljs"><pre><code class="hljs plain">- enable:         默认为 false。  - all_site_uv:     默认为 false。 #可统计全站的独立访客人数，即可在 blog_info 模块的 Menu 菜单中看到。  - post_pv:       默认为 false。   # 统计每篇文章的页面浏览次数，在文章页的 分享按钮 菜单中可看到。- busuanzi_pure_mini_js:       统计 js。  #调用不蒜子统计 js 文件，可将该文件保存至你的 WebServer 或 CDN 中，然后在这里填入 URL。</code></pre></div><h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>至此，Hexo深坑之旅也算告一段落了。作为一个轻量级博客管理工具 Hexo 无疑是非常强大的，不论是其便捷性、灵活性，还是可塑性，都是十分优秀和精致。不过说到底他也只是一个工具，博客的核心始终还是文章，不能本末倒置。如今博客的框架已经大致完成，虽然还不是特别完善，但是也该把精力投入到学习和写作当中去了，至于 hexo 的其他优化只用等到用到时，再进行更新。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发与填坑</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Hexo</tag>
+      
+      <tag>Materia</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hexo深坑之旅（4）— Mac系统下搭建Hexo</title>
+    <link href="/2017/04/30/2017043001/"/>
+    <url>/2017/04/30/2017043001/</url>
+    
+    <content type="html"><![CDATA[<meta name="referrer" content="no-referrer" /><blockquote><p><strong>前言</strong>：此前笔者曾在win7系统中用hexo+jacman搭建过一次个人博客，期间几经波折，踏过不少深坑。而由于前段时间刚入手了一台MacAir，不得已又要再次踏上这场深坑之旅。好在万变不离其中，虽说是两个系统，但大部分的操作还是相同的，所以在这篇文章中主要介绍Mac系统下的注意点。而至于详细的操作请参考笔者的另一篇文章：<a href="http://www.jianshu.com/p/3d7e8946da8f" target="_blank" rel="noopener">Hexo深坑之旅（1）- win7系统下安装hexo</a></p></blockquote><h2 id="开始须知"><a href="#开始须知" class="headerlink" title="开始须知"></a>开始须知</h2><h3 id="终端"><a href="#终端" class="headerlink" title="终端"></a>终端</h3><h4 id="打开"><a href="#打开" class="headerlink" title="打开"></a>打开</h4><p>按下快捷键 Ctrol+ Space 空格键，激活 Spotlight 搜索,随后在搜索框中输入“终端”关键字。</p><p><img src="http://upload-images.jianshu.io/upload_images/2031241-1cbfe8d898b85321.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="终端.png"></p><h4 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h4><p>cd 前往目标文件。例:</p><div class="hljs"><pre><code class="hljs plain">cd &#x2F;Users&#x2F;Desktop&#x2F;前端画室&#x2F;web前端&#x2F;blog</code></pre></div><h2 id="1-环境配置"><a href="#1-环境配置" class="headerlink" title="1.环境配置"></a>1.环境配置</h2><p>###1. 1Node.js<br><img src="http://upload-images.jianshu.io/upload_images/2031241-92a9578f915892fa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="node.js"><br>Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。 简单来说你也可以把它看成是一个运行在服务器端的JavaScript语言。这里主要是用于创建hexo博客的框架从而生成静态页面。<br><a href="https://nodejs.org/en/" target="_blank" rel="noopener">Node.js官网</a><br><a href="http://nodejs.cn/" target="_blank" rel="noopener">Node.js官网（中文）</a><br>这里推荐下载v6版本，因为v7版本的坑比较多，不适合新手。<br>下载安装后，可以在终端中用以下命令检测是否安装成功。</p><div class="hljs"><pre><code class="hljs plain">node -vnpm -v</code></pre></div><p>如果有版本号显示则表示安装成功</p><div class="hljs"><pre><code class="hljs plain">Macbook Air：blog$ node -vv6.10.1Macbook Air：blog$ npm -v3.10.10</code></pre></div><p>###1.2 Git<br><a href="https://git-scm.com/" target="_blank" rel="noopener">Git官网</a><br>Git是一款免费、开源的分布式版本控制系统，所谓分布式（类似于星形网络）即是可以将项目分布到任何一台电脑中供用户使用，使每台电脑都相当于“主服务器”。而版本控制则可以查看每一次提交或修改的历史记录。Git的优点在于可以灵活高效地处理任何或小或较大的项目。<br><img src="http://upload-images.jianshu.io/upload_images/2031241-e21ed633b46e0a1f.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="git"></p><h4 id="1-2-1-xcode"><a href="#1-2-1-xcode" class="headerlink" title="1.2.1 xcode"></a>1.2.1 xcode</h4><p>对于Mac用户来说推荐使用苹果开发的 xcode ，自带有git，可以在App Store中自行下载安装。<br><img src="http://upload-images.jianshu.io/upload_images/2031241-1cce405dba97da9e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="Xcode.png"><br>由于xcode默认没有安装命令行工具，因此安装完成后，还需要在xcode中下载 Command Line Tools 工具。<br>（1） 在终端（terminal）中输入命令：</p><div class="hljs"><pre><code class="hljs plain">$ xcode-select --install</code></pre></div><p>（2）安装 xcode-select<br><img src="http://upload-images.jianshu.io/upload_images/2031241-6f00d7063ed2e0a7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="xcode-select.png"><br>（3）再次在终端（terminal）中输入命令：<code>xcode-select --install</code> 检验是否安装成功：<br><img src="http://upload-images.jianshu.io/upload_images/2031241-40e2a048680c1d36.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="xcode-select --install.png"><br>如上图，则成功安装。这时在打开xcode新建一个项目，选择macOS，就能看到 Command Line Tools<br><img src="http://upload-images.jianshu.io/upload_images/2031241-c87a4522af46081f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="tool.png"></p><h4 id="1-2-2-下载安装包"><a href="#1-2-2-下载安装包" class="headerlink" title="1.2.2 下载安装包"></a>1.2.2 下载安装包</h4><p>mac也可以使用 <a href="http://mxcl.github.com/homebrew/" target="_blank" rel="noopener">Homebrew</a>, <a href="http://www.macports.org/" target="_blank" rel="noopener">MacPorts</a> ：<code>brew install git</code><br>;或下载 <a href="http://sourceforge.net/projects/git-osx-installer/" target="_blank" rel="noopener">安装程序</a> 安装。<br>本人并没有尝试，所以不多说，详细方法可查看<a href="https://hexo.io/zh-cn/docs/index.html" target="_blank" rel="noopener">hexo官方文档</a></p><h2 id="2-安装Hexo"><a href="#2-安装Hexo" class="headerlink" title="2.安装Hexo"></a>2.安装Hexo</h2><h3 id="2-1安装"><a href="#2-1安装" class="headerlink" title="2.1安装"></a>2.1安装</h3><p>Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 <a href="http://daringfireball.net/projects/markdown/" target="_blank" rel="noopener">Markdown</a>（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。<br><strong>注意！</strong> <strong>注意！</strong> <strong>注意！</strong><br>由于hexo新版本的问题，很多原来的方法都已失效，因此在搜索资料时一定要注意文章发布时间。<br>查看<a href="https://hexo.io/zh-cn/docs/index.html" target="_blank" rel="noopener">hexo官方文档</a>，打开终端执行命令：</p><div class="hljs"><pre><code class="hljs plain">$ npm install -g hexo-cli</code></pre></div><p>不过有时会因为权限问题而报错，推荐加上 <code>sudo命令</code> (可能会提示输入系统管理员密码)：</p><div class="hljs"><pre><code class="hljs plain">$ sudo npm install -g hexo</code></pre></div><h3 id="2-2初始化"><a href="#2-2初始化" class="headerlink" title="2.2初始化"></a>2.2初始化</h3><p>先新建一个文件夹，用来存放hexo，如blog。<br>然后用终端 cd 到blog的目录下，执行命令：</p><div class="hljs"><pre><code class="hljs plain">$ hexo init</code></pre></div><p>执行：</p><div class="hljs"><pre><code class="hljs plain">$ sudo npm install -g</code></pre></div><p>执行 <code>$ hexo -v</code> 查看hexo版本：<br><img src="http://upload-images.jianshu.io/upload_images/2031241-21e9ae3e98ec5b6a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="hexo.png"><br>这时打开blog文件夹，可以看到已经生成了hexo文件<br><img src="http://upload-images.jianshu.io/upload_images/2031241-63408149022b8ad1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="blog.png"><br>执行命令，开启本地服务器：</p><div class="hljs"><pre><code class="hljs plain">$ hexo s</code></pre></div><p>然后在浏览器中打开网址<a href="http://0.0.0.0:4000/" target="_blank" rel="noopener">http://localhost:4000</a>，能看到如下页面：<br><img src="http://upload-images.jianshu.io/upload_images/2031241-0c9eec40750c4bf8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="hexo4000.png"></p><h2 id="3-关联Github"><a href="#3-关联Github" class="headerlink" title="3.关联Github"></a>3.关联Github</h2><h3 id="3-1-注册Github账号并创建仓库"><a href="#3-1-注册Github账号并创建仓库" class="headerlink" title="3.1 注册Github账号并创建仓库"></a>3.1 注册Github账号并创建仓库</h3><p>参考：<a href="http://www.jianshu.com/p/3d7e8946da8f" target="_blank" rel="noopener">Hexo深坑之旅（1）- win7系统下安装hexo</a></p><h3 id="3-2添加ssh-key到Github"><a href="#3-2添加ssh-key到Github" class="headerlink" title="3.2添加ssh key到Github"></a>3.2添加ssh key到Github</h3><p>首先<strong>检查SSH-keys是否存在</strong>，打开终端执行命令：</p><div class="hljs"><pre><code class="hljs plain">MacBook-Air:~ zhoujunyang$ cd ~&#x2F;.sshMacBook-Air:.ssh zhoujunyang$ lsid_rsaid_rsa.pubknown_hosts</code></pre></div><p>如果有文件id_rsa.pub或id_dsa.pub，则直接进入将SSH key添加到Github中，否则进入下一步<strong>生成SSH key</strong>。</p><div class="hljs"><pre><code class="hljs plain">$ ssh-keygen -t rsa -C &quot;your_email@example.com&quot;</code></pre></div><p><code>your_email@example.com</code> 为Github的邮箱地址。<br>默认会在相应路径下（~/.ssh/id_rsa.pub）生成id_rsa和id_rsa.pub两个文件。<br>打开id_rsa.pub文件，复制里面的信息。<br><img src="http://upload-images.jianshu.io/upload_images/2031241-5cfe6a4b1134268a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="ssh.png"></p><p>进入Github –&gt; Settings –&gt; SSH keys –&gt; add SSH key:</p><p><img src="http://upload-images.jianshu.io/upload_images/2031241-935b0f70af8557da.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="key.png"></p><p>Title里任意添一个标题，将复制的内容粘贴到Key里，点击下方Add key绿色按钮即可。</p><p><img src="http://upload-images.jianshu.io/upload_images/2031241-f43b56b6ff6f2e2f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt="title.png"></p><h3 id="3-3配置文件"><a href="#3-3配置文件" class="headerlink" title="3.3配置文件"></a>3.3配置文件</h3><p>打开blog文件夹下的 <code>_config.yml</code>文件，修改参数：</p><div class="hljs"><pre><code class="hljs plain">deploy:    type: git    repository: git@github.com:zhouxiaoyu1994&#x2F;zhouxiaoyu1994.github.io.git    branch: master</code></pre></div><p>你需要将repository后zhouxiaoyu1994换成你自己的用户名。</p><h3 id="3-4本地上传"><a href="#3-4本地上传" class="headerlink" title="3.4本地上传"></a>3.4本地上传</h3><p>需先安装 <code>hexo-deployer-git</code></p><div class="hljs"><pre><code class="hljs plain">$npm install hexo-deployer-git --save</code></pre></div><p>执行命令：</p><div class="hljs"><pre><code class="hljs plain">$ hexo clean      清除缓存文件$ hexo generate     或者hexo g 生成静态文件。$ hexo deploy            或者hexo d 部署网站。</code></pre></div><p>最后，浏览器中打开网址<a href="https://zhouxiaoyu1994.github.io/" target="_blank" rel="noopener">http://zhouxiaoyu1994.github.io</a>（将zhouxiaoyu1994换成你的用户名）能看到和打开<a href="http://localhost:4000" target="_blank" rel="noopener">http://localhost:4000</a> 时一样的页面。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发与填坑</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Hexo</tag>
+      
+      <tag>Mac</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hexo深坑之旅（3）—实用技巧</title>
+    <link href="/2017/04/29/2017042901/"/>
+    <url>/2017/04/29/2017042901/</url>
+    
+    <content type="html"><![CDATA[<meta name="referrer" content="no-referrer" /><blockquote><p><strong>前言：</strong>在搭建hexo博客的过程中遇到了许多问题，同时也发现了一些实用的小技巧，下面做一个总结与大家分享。</p></blockquote><h2 id="hexo基本命令"><a href="#hexo基本命令" class="headerlink" title="hexo基本命令"></a>hexo基本命令</h2><div class="hljs"><pre><code class="hljs plain">$ hexo clean #清除缓存文件 (db.json) 和已生成的静态文件 (public)$ hexo generate &#x3D; hexo g #生成静态文件$ hexo server &#x3D; hexo s #启动服务器(本地预览)。默认情况下，访问网址为： http:&#x2F;&#x2F;localhost:4000&#x2F;。$ hexo deploy &#x3D; hexo d #远程部署$ hexo new &quot;文章标题&quot; &#x3D; hexo n &quot;文章标题&quot; #新建一篇博文 (默认使用post)$ hexo new page &quot;页面标题&quot; #新建页面</code></pre></div><p>一般情况下，修改网站之后只要部署下面几个命令就行</p><div class="hljs"><pre><code class="hljs plain">$ hexo clean$ hexo g$ hexo d</code></pre></div><h2 id="页面乱码问题"><a href="#页面乱码问题" class="headerlink" title="页面乱码问题"></a>页面乱码问题</h2><p><strong>原因：</strong>文件未正确编码。<br><strong>解决：</strong>大部分是中文显示不正确，因此只要将文件保存为UTF-8即可解决问题。<br><strong>方法：</strong><br>用记事本打开本地的博客文件“xxx.md”或者“xxx.yml”，然后点“另存为”，“编码(E):”选择“UTF-8”，<br>点击“保存”，替换原文件。刷新网页即可成功显示。</p><h2 id="还原默认主题配置"><a href="#还原默认主题配置" class="headerlink" title="还原默认主题配置"></a>还原默认主题配置</h2><p>搭建博客时，会经常不小心改变了默认配置，又无法找出的时候，可以选择先备份原主题文件夹后再删除，然后重新再下载主题一次，将原主题文件夹进行替换后轻松搞定。</p><h2 id="不蒜子站内统计"><a href="#不蒜子站内统计" class="headerlink" title="不蒜子站内统计"></a>不蒜子站内统计</h2><h3 id="安装脚本（必选）"><a href="#安装脚本（必选）" class="headerlink" title="安装脚本（必选）"></a>安装脚本（必选）</h3><p>打开themes/你的主题/layout/_partial/footer.pejs添加如下脚本即可。</p><div class="hljs"><pre><code class="hljs plain">&lt;script async src&#x3D;&quot;https:&#x2F;&#x2F;dn-lbstatics.qbox.me&#x2F;busuanzi&#x2F;2.3&#x2F;busuanzi.pure.mini.js&quot;&gt;&lt;&#x2F;script&gt;</code></pre></div><h3 id="安装标签"><a href="#安装标签" class="headerlink" title="安装标签"></a>安装标签</h3><h4 id="显示站点总访问量"><a href="#显示站点总访问量" class="headerlink" title="显示站点总访问量"></a>显示站点总访问量</h4><p>要显示站点总访问量，复制以下代码添加到你需要显示的位置。可以打开themes/你的主题/layout/_partial/footer.ejs添加即可。<br>有两种代码可选：<br><strong>代码a：</strong>pv的方式，单个用户连续点击n篇文章，记录n次访问量。</p><div class="hljs"><pre><code class="hljs plain">&lt;span id&#x3D;&quot;busuanzi_container_site_pv&quot;&gt;本站总访问量&lt;span id&#x3D;&quot;busuanzi_value_site_pv&quot;&gt;&lt;&#x2F;span&gt;次&lt;&#x2F;span&gt;</code></pre></div><p><strong>代码b：</strong>uv的方式，单个用户连续点击n篇文章，只记录1次访客数。</p><div class="hljs"><pre><code class="hljs plain">&lt;span id&#x3D;&quot;busuanzi_container_site_uv&quot;&gt;本站访客数&lt;span id&#x3D;&quot;busuanzi_value_site_uv&quot;&gt;&lt;&#x2F;span&gt;人次&lt;&#x2F;span&gt;</code></pre></div><h4 id="显示单页面访问量"><a href="#显示单页面访问量" class="headerlink" title="显示单页面访问量"></a>显示单页面访问量</h4><p>要显示每篇文章的访问量，复制以下代码添加到你需要显示的位置。<br>代码：pv的方式，单个用户点击1篇文章，本篇文章记录1次阅读量。</p><div class="hljs"><pre><code class="hljs plain">&lt;span id&#x3D;&quot;busuanzi_container_page_pv&quot;&gt;本文总阅读量&lt;span id&#x3D;&quot;busuanzi_value_page_pv&quot;&gt;&lt;&#x2F;span&gt;次&lt;&#x2F;span&gt;</code></pre></div><p>具体代码演示<br>实际效果：<br><img src="http://upload-images.jianshu.io/upload_images/2031241-2722a15aff13b807.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt=""><br>具体代码：</p><div class="hljs"><pre><code class="hljs plain">&lt;script async src&#x3D;&quot;https:&#x2F;&#x2F;dn-lbstatics.qbox.me&#x2F;busuanzi&#x2F;2.3&#x2F;busuanzi.pure.mini.js&quot;&gt;&lt;&#x2F;script&gt;&lt;&#x2F;br&gt;本站总访问量&lt;span id&#x3D;&quot;busuanzi_value_site_pv&quot;&gt;&lt;&#x2F;span&gt;次，本站访客数&lt;span id&#x3D;&quot;busuanzi_value_site_uv&quot;&gt;&lt;&#x2F;span&gt;人次，本文总阅读量&lt;span id&#x3D;&quot;busuanzi_value_page_pv&quot;&gt;&lt;&#x2F;span&gt;次</code></pre></div><h2 id="创建公益404页面"><a href="#创建公益404页面" class="headerlink" title="创建公益404页面"></a>创建公益404页面</h2><p>在主题下的source目录里创建404.html<br>输入代码：</p><div class="hljs"><pre><code class="hljs plain">&lt;html&gt;&lt;head&gt;&lt;meta charset&#x3D;&quot;utf-8&quot;&gt;&lt;title&gt;404页面&lt;&#x2F;title&gt;&lt;style&gt;*&#123;margin:0;padding:0;outline:none;font-family:\5FAE\8F6F\96C5\9ED1,宋体;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-khtml-user-select:none;user-select:none;cursor:default;font-weight:lighter;&#125;.center&#123;margin:0 auto;&#125;.whole&#123;width:100%;height:100%;line-height:100%;position:fixed;bottom:0;left:0;z-index:-1000;overflow:hidden;&#125;.whole img&#123;width:100%;height:100%;&#125;.mask&#123;width:100%;height:100%;position:absolute;top:0;left:0;background:#000;opacity:0.6;filter:alpha(opacity&#x3D;60);&#125;.b&#123;width:100%;text-align:center;height:400px;position:absolute;top:50%;margin-top:-230px&#125;.a&#123;width:150px;height:50px;margin-top:30px&#125;.a a&#123;display:block;float:left;width:150px;height:50px;background:#fff;text-align:center;line-height:50px;font-size:18px;border-radius:25px;color:#333&#125;.a a:hover&#123;color:#000;box-shadow:#fff 0 0 20px&#125;p&#123;color:#fff;margin-top:40px;font-size:24px;&#125;#num&#123;margin:0 5px;font-weight:bold;&#125;.plan&#123;color: black;background: white;font-size: 30px; margin-top: 20px;&#125;.plan:hover&#123;color: white;background: black;font-size: 30px;&#125;#gg &#123;position: absolute;width: 654px;height: 470px;left: 50%;top: 50%;margin-left: -377px;margin-top: -235px;&#125;&lt;&#x2F;style&gt;&lt;&#x2F;head&gt;&lt;body onload&#x3D;&quot;redirect();&quot;&gt;&lt;div id&#x3D;&quot;gg&quot;&gt;&lt;iframe class&#x3D;&quot;gg&quot; scrolling&#x3D;&#39;no&#39; frameborder&#x3D;&#39;0&#39; src&#x3D;&#39;https:&#x2F;&#x2F;yibo.iyiyun.com&#x2F;Home&#x2F;Distribute&#x2F;ad404&#x2F;key&#x2F;1122458&#39; width&#x3D;&#39;654&#39; height&#x3D;&#39;470&#39; style&#x3D;&#39;display:block;&#39;&gt;&lt;&#x2F;iframe&gt;&lt;&#x2F;div&gt;&lt;div class&#x3D;&quot;whole&quot;&gt;![](http:&#x2F;&#x2F;upload-images.jianshu.io&#x2F;upload_images&#x2F;2031241-6628c5d197dd72ea.jpg?imageMogr2&#x2F;auto-orient&#x2F;strip%7CimageView2&#x2F;2&#x2F;w&#x2F;1240)&lt;&#x2F;div&gt;&lt;&#x2F;body&gt;&lt;&#x2F;html&gt;</code></pre></div><p>图片背景可自行修改</p><div class="hljs"><pre><code class="hljs plain">&lt;div class&#x3D;&quot;whole&quot;&gt;![](http:&#x2F;&#x2F;upload-images.jianshu.io&#x2F;upload_images&#x2F;2031241-6628c5d197dd72ea.jpg?imageMogr2&#x2F;auto-orient&#x2F;strip%7CimageView2&#x2F;2&#x2F;w&#x2F;1240)&lt;&#x2F;div&gt;</code></pre></div><h2 id="使用七牛云做Hexo图床"><a href="#使用七牛云做Hexo图床" class="headerlink" title="使用七牛云做Hexo图床"></a>使用七牛云做Hexo图床</h2><p>MarkDown 插入图片是这样的写法：</p><div class="hljs"><pre><code class="hljs plain">![](图片链接)</code></pre></div><h3 id="注册账号"><a href="#注册账号" class="headerlink" title="注册账号"></a>注册账号</h3><p>官网：<a href="https://portal.qiniu.com/signup/choice?code=3ln23lpsrga4y" target="_blank" rel="noopener">https://portal.qiniu.com/signup/choice?code=3ln23lpsrga4y</a></p><h3 id="添加极简图床插件"><a href="#添加极简图床插件" class="headerlink" title="添加极简图床插件"></a>添加极简图床插件</h3><p>网址:<a href="http://yotuku.cn/" target="_blank" rel="noopener">http://yotuku.cn/</a></p><h3 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h3><p>将需要用于文章配置图的本地图片，拖入已经打开的好的Chrome<a href="http://yotuku.cn/?utm_source=chromeplugin" target="_blank" rel="noopener">极简图床</a>窗口。<br>按照提示：“粘贴、拖动或点此选择图片上传”即可完成图片上传至七牛云。<br>在“我的上传”中，找到需要插入的图片资源，并复制外链地址，粘贴至MarkDown文件中需要的地方即可</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发与填坑</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Hexo</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hexo深坑之旅（2）- 搭建swiftype站内搜索的几点说明</title>
+    <link href="/2017/04/28/2017042801/"/>
+    <url>/2017/04/28/2017042801/</url>
+    
+    <content type="html"><![CDATA[<meta name="referrer" content="no-referrer" /><blockquote><p><strong>前言：</strong>jacman主题默认提供的google、baidu还有tinysou三种搜索，很是让我无语，不是被墙就是极度不友善，折腾了半天无果只能放弃。一番搜寻发现了swiftype，教程也有很多，但大部分说的并不是很明白版本也比较老，经过一番填坑后终于搞定。下面就直接进入正题吧。</p></blockquote><h2 id="注册swiftype账号"><a href="#注册swiftype账号" class="headerlink" title="注册swiftype账号"></a>注册swiftype账号</h2><p>官方地址：<a href="https://swiftype.com/" target="_blank" rel="noopener">https://swiftype.com/</a><br>注册很简单，基本信息还有公司信息可以随便填。这里重点需要说明的是，由于swiftype注册需要填写企业邮箱，而这让我等没有组织的人情以何堪？无奈只能转而注册企业邮箱，试了两个提供商均以失败告终。一个是腾讯企业邮箱，还有一个是网易邮箱。都卡在域名这一块。正当准备放弃时，灵光一闪，搜一个企业邮箱号试试，于是填写了杭州丁香园（请原谅我等五斗小民吧）的企业邮箱，提交，耶，成功了。但是第二天发现问题了，账号居然无法登陆(需要邮箱认证，天知道我根本无法验证)，于是又重新注册了一个，用的是swiftype的企业邮箱。嗯，先这样，等找到组织后在重新注册吧。<br><img src="http://upload-images.jianshu.io/upload_images/2031241-dcec3547ef54bc3f.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt=""></p><h2 id="创建搜索引擎"><a href="#创建搜索引擎" class="headerlink" title="创建搜索引擎"></a>创建搜索引擎</h2><p><img src="http://upload-images.jianshu.io/upload_images/2031241-631a772365a63afb.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt=""><br>建立一个索引:<br><img src="http://upload-images.jianshu.io/upload_images/2031241-91e66243a0c27434.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt=""><br>填写自己的域名，不带最后的反斜杠，点击VERIFY，4个验证项，通过之后会让你输入引擎的名字：<br><img src="http://upload-images.jianshu.io/upload_images/2031241-c1d219f8ea69c887.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt=""></p><h2 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h2><p>点击INTEGRATE -&gt; INSTALL SEARCH ，进行一些关键的配置：<br><img src="http://upload-images.jianshu.io/upload_images/2031241-b28c352e522a5cd0.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt=""></p><p>点击CHANGE CONFIGURATION：<br><img src="http://upload-images.jianshu.io/upload_images/2031241-29d72cd52b3393b0.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt=""></p><p>进行一些更详细的配置，4个部分，样式默认就好，也可以自己选，这里就说下面两个部分（<strong>results container</strong> - 搜索结果页），我使用的是默认的，本页面底部有自定义搜索页的案例。<br><img src="http://upload-images.jianshu.io/upload_images/2031241-8ad996fc56c29351.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt=""></p><p>配置<strong>Search field</strong>，这个就是搜索框-input的相关配置了，hexo主题默认就有，而且swiftype提供的SEARCH FIELD都是一样的input标签：<br><img src="http://upload-images.jianshu.io/upload_images/2031241-1474e2a3e9aee1a6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt=""></p><h2 id="hexo主题配置（jacman）"><a href="#hexo主题配置（jacman）" class="headerlink" title="hexo主题配置（jacman）"></a>hexo主题配置（jacman）</h2><p>首先打开<strong>jacman_config.yml</strong>文件在末尾添加如下代码，提供对swiftype的支持：</p><div class="hljs"><pre><code class="hljs plain">swift_search:enable: true</code></pre></div><p>在<strong>hexo\source</strong>目录（注意不是jacman主题的source目录）下<strong>新建一个search文件夹</strong>（如果不存在的），在里面<strong>新建一个index.md</strong>，index.md中写入如下代码：</p><div class="hljs"><pre><code class="hljs plain">---layout: searchtitle: search---</code></pre></div><p>切换的到<strong>jacman\layout_partial</strong>目录下，大部分的代码配置都在这里完成的。先<strong>打开header.ejs</strong>，把<br>在google和百度的搜索代码上，再添加swftype的搜索代码，如下直接<strong>copy</strong>过去就行：</p><div class="hljs"><pre><code class="hljs plain">&lt;% if(theme.swift_search&amp;&amp;theme.swift_search.enable)&#123; %&gt;&lt;form class&#x3D;&quot;search&quot; action&#x3D;&quot;&lt;%- config.root %&gt;search&#x2F;index.html&quot; method&#x3D;&quot;get&quot; accept-charset&#x3D;&quot;utf-8&quot;&gt;&lt;label&gt;Search&lt;&#x2F;label&gt;&lt;input type&#x3D;&quot;text&quot; class&#x3D;&quot;st-default-search-input&quot; maxlength&#x3D;&quot;20&quot; placeholder&#x3D;&quot;Search&quot; &#x2F;&gt;&lt;&#x2F;form&gt;</code></pre></div><p>将原来的<strong>search.ejs</strong>中的代码<strong>清空</strong>，<strong>替换为以下的代码</strong>，其实主要就是为了控制结果的显示样式（后期可以自己调整），<strong>注意：将最下面的w7ca3xWstLkz2UvAeyAJ<br> 部分替换成swiftype给你的js代码</strong>。</p><div class="hljs"><pre><code class="hljs plain">&lt;% if(theme.swift_search.enable) &#123; %&gt;&lt;div id&#x3D;&quot;container&quot; class&#x3D;&quot;page&quot;&gt;&lt;div id&#x3D;&quot;st-results-container&quot; class&#x3D;&quot;st-search-container&quot; style&#x3D;&quot;width:80%&quot;&gt;正在加载搜索结果，请稍等。&lt;&#x2F;div&gt;&lt;style&gt;.st-result-text &#123;background: #fafafa;display: block;border-left: 0.5em solid #ccc;-webkit-transition: border-left 0.45s;-moz-transition: border-left 0.45s;-o-transition: border-left 0.45s;-ms-transition: border-left 0.45s;transition: border-left 0.45s;padding: 0.5em;&#125;@media only screen and (min-width: 768px) &#123;.st-result-text &#123;padding: 1em;&#125;&#125;.st-result-text:hover &#123;border-left: 0.5em solid #ea6753;&#125;.st-result-text h3 a&#123;color: #2ca6cb;line-height: 1.5;font-size: 22px;&#125;.st-snippet em &#123;font-weight: bold;color: #ea6753;&#125;&lt;&#x2F;style&gt;&lt;script type&#x3D;&quot;text&#x2F;javascript&quot;&gt;(function(w,d,t,u,n,s,e)&#123;w[&#39;SwiftypeObject&#39;]&#x3D;n;w[n]&#x3D;w[n]||function()&#123;(w[n].q&#x3D;w[n].q||[]).push(arguments);&#125;;s&#x3D;d.createElement(t);e&#x3D;d.getElementsByTagName(t)[0];s.async&#x3D;1;s.src&#x3D;u;e.parentNode.insertBefore(s,e);&#125;)(window,document,&#39;script&#39;,&#39;&#x2F;&#x2F;s.swiftypecdn.com&#x2F;install&#x2F;v2&#x2F;st.js&#39;,&#39;_st&#39;);_st(&#39;install&#39;,&#39;w7ca3xWstLkz2UvAeyAJ&#39;,&#39;2.0.0&#39;);&lt;&#x2F;script&gt;&lt;% &#125; %&gt;</code></pre></div><p>打开<strong>footer.ejs或header.ejs</strong>，在最后一个标签（w7ca3xWstLkz2UvAeyAJ<br>）之前添加swiftype分配给你的js代码（同上），我的是：</p><div class="hljs"><pre><code class="hljs plain">&lt;script type&#x3D;&quot;text&#x2F;javascript&quot;&gt;(function(w,d,t,u,n,s,e)&#123;w[&#39;SwiftypeObject&#39;]&#x3D;n;w[n]&#x3D;w[n]||function()&#123;(w[n].q&#x3D;w[n].q||[]).push(arguments);&#125;;s&#x3D;d.createElement(t);e&#x3D;d.getElementsByTagName(t)[0];s.async&#x3D;1;s.src&#x3D;u;e.parentNode.insertBefore(s,e);&#125;)(window,document,&#39;script&#39;,&#39;&#x2F;&#x2F;s.swiftypecdn.com&#x2F;install&#x2F;v2&#x2F;st.js&#39;,&#39;_st&#39;);_st(&#39;install&#39;,&#39;w7ca3xWstLkz2UvAeyAJ&#39;,&#39;2.0.0&#39;);&lt;&#x2F;script&gt;</code></pre></div><p>到这里所有的修改都已经完成了，如果没有问题的话，命令行执行：</p><div class="hljs"><pre><code class="hljs plain">$ hexo clean$ hexo d -g</code></pre></div><p>大功告成，开始搜索。。。。。</p><h2 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h2><p><a href="http://xiaofeng.site/2015/11/25/%E9%80%9A%E8%BF%87Swiftype%E5%AE%9E%E7%8E%B0hexo%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2/undefined/" target="_blank" rel="noopener">通过Swiftype实现hexo站内搜索</a><br><a href="http://www.jerryfu.net/post/search-engine-for-hexo-with-swiftype-v2.html" target="_blank" rel="noopener">利用swiftype为hexo添加站内搜索v2.0</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发与填坑</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Hexo</tag>
+      
+      <tag>swiftype</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hexo深坑之旅（1）- win7系统下安装hexo</title>
+    <link href="/2017/04/27/2017042701/"/>
+    <url>/2017/04/27/2017042701/</url>
+    
+    <content type="html"><![CDATA[<meta name="referrer" content="no-referrer" /><h2 id="GitHub社区"><a href="#GitHub社区" class="headerlink" title="GitHub社区"></a>GitHub社区</h2><p>Git是一个分布式的版本控制系统，最初由Linus Torvalds编写，用作Linux内核代码的管理。在推出后，Git在其它项目中也取得了很大成功，尤其是在Ruby社区中。目前，包括Rubinius、Merb和Bitcoin在内的很多知名项目都使用了Git。Git同样可以被诸如Capistrano和Vlad the Deployer这样的部署工具所使用。</p><h3 id="注册Github帐号"><a href="#注册Github帐号" class="headerlink" title="注册Github帐号"></a>注册Github帐号</h3><p><a href="https://github.com/" target="_blank" rel="noopener">官网</a></p><h3 id="创建repository"><a href="#创建repository" class="headerlink" title="创建repository"></a>创建repository</h3><p>repository相当于一个仓库，用来放置你的代码文件。首先，登陆进入Github，并进入个人页面，选择New repository(下图红圈的地方)<br><img src="https://upload-images.jianshu.io/upload_images/2031241-8e16d8be5afc1774.jpg" srcset="/img/loading.gif" alt=""><br>创建时，只需要填写Repository name即可。！！！注意，格式为xxx.github.io,xxx为你的名字。（如：zhouxiaoyu1994.github.io)<br><img src="http://upload-images.jianshu.io/upload_images/2031241-5654f6b9a5bfa0e1.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt=""></p><h2 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h2><h3 id="安装前提软件"><a href="#安装前提软件" class="headerlink" title="安装前提软件"></a>安装前提软件</h3><p><a href="https://nodejs.org/en/" target="_blank" rel="noopener">Node.js</a>作用：node.js用来创建hexo博客框架的，我当前安装版本为：node-v4.5.0-x86.msi<a href="https://git-scm.com/" target="_blank" rel="noopener">Git客户端</a>作用：把本地的hexo内容提交到github上去，我当前安装版本为：Git-2.10.0-32-bit.exe</p><h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><p>所有必备的应用程序安装完成后，即可使用 npm 安装 Hexo。</p><div class="hljs"><pre><code class="hljs plain">$ npm install -g hexo-cli$ npm install hexo --save</code></pre></div><h3 id="初始化配置"><a href="#初始化配置" class="headerlink" title="初始化配置"></a>初始化配置</h3><h4 id="创建Hexo文件夹"><a href="#创建Hexo文件夹" class="headerlink" title="创建Hexo文件夹"></a>创建Hexo文件夹</h4><p>安装完成后，根据自己喜好建立目录(如E:\blog\hexo），进该路径下E:\blog\hexo右键Git Bash Here执行以下指令$ hexo init</p><h4 id="安装Hexo插件"><a href="#安装Hexo插件" class="headerlink" title="安装Hexo插件"></a>安装Hexo插件</h4><div class="hljs"><pre><code class="hljs plain">npm install hexo-generator-category --savenpm install hexo-generator-tag --savenpm install hexo-server --savenpm install hexo-deployer-git --savenpm install hexo-deployer-heroku --savenpm install hexo-deployer-rsync --savenpm install hexo-deployer-openshift --savenpm install hexo-renderer-marked@0.2 --savenpm install hexo-renderer-stylus@0.2 --savenpm install hexo-generator-feed@1 --savenpm install hexo-generator-sitemap@1 --save</code></pre></div><h4 id="本地查看效果"><a href="#本地查看效果" class="headerlink" title="本地查看效果"></a>本地查看效果</h4><p>继续执行以下命令，成功后可登录localhost:4000查看效果</p><div class="hljs"><pre><code class="hljs plain">$ hexo server</code></pre></div><h3 id="Hexo配置到GitHub"><a href="#Hexo配置到GitHub" class="headerlink" title="Hexo配置到GitHub"></a>Hexo配置到GitHub</h3><h4 id="检查ssh-key"><a href="#检查ssh-key" class="headerlink" title="检查ssh key"></a>检查ssh key</h4><p>首先检查你电脑上现有的 <code>ssh key：$cd~/. ssh</code><br> 检查本机的ssh密钥如果提示：<code>No such file or directory</code><br> 说明你是第一次使用git。生成新的SSH Key：</p><div class="hljs"><pre><code class="hljs plain">$ ssh-keygen -t rsa -C &quot;邮件地址@youremail.com&quot;Generating public&#x2F;private rsa key pair.Enter file in which to save the key (&#x2F;Users&#x2F;your_user_directory&#x2F;.ssh&#x2F;id_rsa):&lt;回车就好&gt;</code></pre></div><p><strong>注意1:</strong> 此处的邮箱地址，你可以输入自己的邮箱地址；<strong>注意2:</strong> 此处的「-C」的是大写的「C」<br>然后系统会要你输入密码(<strong>一般直接回车就行</strong>)：</p><div class="hljs"><pre><code class="hljs plain">Enter passphrase (empty for no passphrase):&lt;输入加密串&gt;Enter same passphrase again:&lt;再次输入加密串&gt;</code></pre></div><p>在回车中会提示你输入一个密码，这个密码会在你提交项目时使用，如果为空的话提交项目时则不用输入。这个设置是防止别人往你的项目里提交内容。有时会出现无法输入密码的情况，遇到的话直接回车就行，不用管。<br><strong>注意：</strong>输入密码的时候没有*字样的，你直接输入就可以了。<br>最后看到这样的界面，就成功设置ssh key了：<br><img src="http://upload-images.jianshu.io/upload_images/2031241-5f529c6db3f5261c.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt=""></p><h4 id="添加SSH-Key到GitHub"><a href="#添加SSH-Key到GitHub" class="headerlink" title="添加SSH Key到GitHub"></a>添加SSH Key到GitHub</h4><p>在本机设置SSH Key之后，需要添加到GitHub上，以完成SSH链接的设置。<br>打开本地C:\Documents and Settings\Administrator.ssh\id_rsa.pub文件。此文件里面内容为刚才生成的密钥。如果看不到这个文件，你需要设置显示隐藏文件。准确的复制这个文件的内容，才能保证设置的成功。<br>登陆github系统。点击右上角的Settings—&gt;SSH and GPG keys —&gt; add another public keys<br>把你本地生成的密钥复制到里面（key文本框中）标题随便取， 点击 add key 就ok了</p><h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>可以输入下面的命令，看看设置是否成功，<a href="mailto:git@github.com">git@github.com</a>的部分不要修改：</p><div class="hljs"><pre><code class="hljs plain">$ ssh -T git@github.com</code></pre></div><p>如果是下面的反馈：</p><div class="hljs"><pre><code class="hljs plain">The authenticity of host &#39;github.com (207.97.227.239)&#39; can&#39;t be established.RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.Are you sure you want to continue connecting (yes&#x2F;no)?输入yes，然后回车：Hi cnfeat! You&#39;ve successfully authenticated, but GitHub does not provide shell access.</code></pre></div><h4 id="设置用户信息"><a href="#设置用户信息" class="headerlink" title="设置用户信息"></a>设置用户信息</h4><p>Git会根据用户的名字和邮箱来记录提交。GitHub也是用这些信息来做权限的处理，输入下面的代码进行个人信息的设置，把名称和邮箱替换成你自己的，名字必须是你的真名，而不是GitHub的昵称。</p><div class="hljs"><pre><code class="hljs plain">$ git config --global user.name &quot;cnfeat&quot;&#x2F;&#x2F;用户名$ git config --global user.email &quot;cnfeat@gmail.com&quot;&#x2F;&#x2F;填写自己的邮箱</code></pre></div><p>SSH Key配置成功本机已成功连接到github。</p><h2 id="Jacman-主题"><a href="#Jacman-主题" class="headerlink" title="Jacman 主题"></a>Jacman 主题</h2><p>以下主要转载wuchong 的Jark’s Blog<a href="http://wuchong.me/blog/2014/11/20/how-to-use-jacman/" target="_blank" rel="noopener">http://wuchong.me/blog/2014/11/20/how-to-use-jacman/</a></p><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>在博客根目录下执行如下命令。</p><div class="hljs"><pre><code class="hljs plain">$ git clonehttps:&#x2F;&#x2F;github.com&#x2F;wuchong&#x2F;jacman.git themes&#x2F;jacman</code></pre></div><h3 id="启用"><a href="#启用" class="headerlink" title="启用"></a>启用</h3><p>修改博客根目录下的_config.yml配置文件中的theme属性，将其设置为jacman。同时建议设置stylus属性中的compress值为true，会自动压缩 CSS 文件，hexo默认配置中不包含这一项，建议开启。如下。</p><div class="hljs"><pre><code class="hljs plain">theme: jacmanstylus:compress: true</code></pre></div><h3 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h3><div class="hljs"><pre><code class="hljs plain">cd themes&#x2F;jacmangit pull origin master</code></pre></div><p>最好先备份主题目录下的 _config.yml 文件后再升级。</p><h3 id="配置指南"><a href="#配置指南" class="headerlink" title="配置指南"></a>配置指南</h3><p>配置文件_config.yml位于jacman主题根目录下。</p><div class="hljs"><pre><code class="hljs `">菜单menu:主页: &#x2F;归档: &#x2F;archives关于: &#x2F;about控件widgets:- category ## 分类- tag ## 标签- links ## 友情链接- rss ## rss订阅RSSrss: &#x2F;atom.xml 图片相关imglogo:enable:true ## 是否显示网站 logosrc: img&#x2F;logo.png        favicon: img&#x2F;favicon.ico     ## 网站图标    apple_icon: img&#x2F;jacman.jpg   ## 苹果设备上的图标，背景不要透明author_img: img&#x2F;author.jpg   ## 网站底部的博主头像banner_img: img&#x2F;banner.jpg   ## 博客顶部的图片主题颜色theme_color:theme:&#39;#2ca6cb&#39;##默认主题颜色为蓝色close_aside:false##是否在文章页面自动关闭侧边栏首页相关index:expand:true## 首页文章是否展开。默认为展开式，显示 Read More。excerpt_link: Read More    作者信息author:intro_line1:&quot;Hello ,I&#39;m Larry Page in Google.&quot; ## 网站底部的个人介绍intro_line2:&quot;This is my blog,believe it or not.&quot;weibo_verifier:## 微博秀的验证码tsina:## 用于微博秀和微博分享weibo:## 用于显示网站底部社交按钮，下同douban:zhihu:email:twitter:github:facebook:linkedin:google_plus:stackoverflow:目录toc:article:true ## 是否在文章中显示目录aside:true ## 是否在侧边栏显示目录友情链接links:码农圈: https:&#x2F;&#x2F;coderq.com,一个面向程序员交流分享的新一代社区Jark&#39;s Blog: http:&#x2F;&#x2F;wuchong.me评论duoshuo_shortname: disqus_shortname:  分享按钮jiathis:enable: false   ## 默认使用主题内建分享id:    tsina: 网站统计google_analytics:enable: falseid:            ## google analytics ID.site:          ## 网站地址.baidu_tongji:enable: falsesitecode:      ## 百度统计站点特征码cnzz_tongji:enable: falsesiteid:        ## CNZZ统计站点ID杂项ShowCustomFont: true  fancybox: true        totop: true           自定义搜索google_cse: enable: falsecx:  baidu_search:    enable: falseid:   site: http:&#x2F;&#x2F;zhannei.baidu.com&#x2F;cse&#x2F;search tinysou_search:     ## http:&#x2F;&#x2F;tinysou.com&#x2F;enable: falseid: &quot;4ac092ad8d749fdc6293&quot;</code></pre></div><h4 id="属性功能"><a href="#属性功能" class="headerlink" title="属性功能"></a>属性功能</h4><p>菜单 menu 默认没有启用/tags和 /categories页面，如果需要启用请在博客目录下的source文件夹中分别建立tags和 categories文件夹每个文件夹中分别包含一个index.md文件。内容为：</p><div class="hljs"><pre><code class="hljs plain">layout: tags (或categories)title: tags (或categories)---</code></pre></div><p>因为主题中已经内置了这两个页面的模板，所以他们会被正确的解析出来。<br><strong>微博秀</strong>：需要注意的是，如果要启用微博秀，您必须填上author属性下tsina和weibo_verifier的值，前者是您微博ID，后者是您微博秀的验证码，访问 <a href="http://app.weibo.com/tool/weiboshow" target="_blank" rel="noopener">http://app.weibo.com/tool/weiboshow</a> 在如下图位置，可以获得您的 verifier，如：我的是b3593ceb。<br><img src="http://upload-images.jianshu.io/upload_images/2031241-064f2c3c0d9ace46.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt=""><br>​ 如果要关闭侧边栏，将close_aside置为true，就会在博文页面自动关闭侧边栏。<br><strong>首页显示模式 Index</strong><br>目前首页的显示模式支持两种，一种是原先的卡片式（前往 <a href="http://wuchong.me/jacman" target="_blank" rel="noopener">Demo</a> 预览），另一种是类似官方主题的文章展开式（<a href="http://wuchong.me/" target="_blank" rel="noopener">本站</a>即采用的这种）。两者各有优劣，前者首页加载速度更快，后者文章内容更能吸引读者。主题默认采用后一种展开式，如需开启第一种卡片式，请设置index属性下的expand: false。<br>卡片式的文章摘要是截取文章内容的前140个字，也可以自己总结description<br>并将其放在开头的front-matter中。展开式的文章摘要就是使用``截取了。<br><strong>作者信息 author</strong><br>作者信息，建议尽量填写完整。其中tsina<br>是你的新浪微博ID，不同于用户名或微博主页地址。启用这个属性后，其他用户在微博上分享你文章的同时会自动@你。同时它和weibo_verifier一起作用生成微博秀。intro_line1和intro_line2是网站底部的个人介绍。weibo、twitter、facebook等是用来显示网站右下角的社交按钮的，如下图所示。<br><img src="http://upload-images.jianshu.io/upload_images/2031241-9e6d086092023717.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" srcset="/img/loading.gif" alt=""><br><strong>目录 toc</strong><br>是否启用在文章中或侧边栏中的目录功能。二者可以都为true<br>或都为false。同时，如果你希望在特定的某一篇文章中关闭目录功能你可以在文章文件开头中的front-matter中加上一行toc: false。如果希望在某一篇文章中关闭目录自动编号功能你可以在文章文件开头的front-matter中加上一行list_number: false。另外 hexo 2.5.2 开始支持中文目录，想获得更好的体验请升级你的 Hexo 版本。<br><strong>评论 comments</strong><br>填写duoshuo_shortname<a href="http://duoshuo.com/" target="_blank" rel="noopener">多说</a>的用户名，启用多说评论系统。在大陆地区更好用的评论系统。<br>填写disqus_shortname<a href="http://disqus.com/" target="_blank" rel="noopener">disqus</a> 的用户名，启用 disqus 评论系统。国际上更广泛使用的评论系统。设置博客根目录下的_config.yml文件中的disqus_shortname同样也能开启该功能。<br><strong>数学公式 mathjax</strong><br>主题支持写 LaTex 数学公式。只需要在文章文件开头的front-matter中，加上一行mathjax: true，即可在文中写 LaTex 公式。<br><strong>图片浏览 fancybox</strong><br>默认关闭，如果你使用 Hexo 经常发表 Gallery 类型的文章，那么请设置为true。<br><strong>自定义字体 ShowCustomFont</strong><br>是否启用自定义字体，默认开启，主要用于显示网站底部的字体。如果你有一定前端基础可以修改 font.styl 替换为你喜欢的字体。<br><strong>主题颜色更改 Theme Color</strong><br>目前官方还未支持十六进制颜色与String值的转换，所以需要手动添加依赖包，该问题估计不久后会解决。</p><div class="hljs"><pre><code class="hljs plain">## 在博客的目录下输入下面指令cd node_modules&#x2F;hexo-renderer-stylussudo npm install stylus@0.49.2 #根据系统文件的权限不同，有的不需要加sudo</code></pre></div><p>然后更改在主题目录下的_config.yml的 theme_color下 theme值。</p><div class="hljs"><pre><code class="hljs plain">### Theme Colortheme_color:theme: &#39;#2ca6cb&#39; ##the defaut theme color is blue</code></pre></div><h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><p><strong>Q：图片默认都是居左的，我怎么设置能让图片居中呢？</strong><br>使用 ``的HTML标签。</p><p><strong>Q：如何建立一篇图片类文章（Gallery Post）？</strong><br>使用hexo new photo “your titile”建立图片类文章，或者直接新建一个 Markdown 文件，将其front-matter修改为如下，即可看到主题为图片类文章提供的样式，<a href="http://wuchong.me/jacman/gallery" target="_blank" rel="noopener">Demo</a>。</p><div class="hljs"><pre><code class="hljs plain">&gt; ---&gt; layout: photo&gt; title: Gallery Post&gt; photos:&gt; - http:&#x2F;&#x2F;i.minus.com&#x2F;ibobbTlfxZgITW.jpg&gt; - http:&#x2F;&#x2F;i.minus.com&#x2F;iedpg90Y0exFS.jpg&gt; ---&gt;</code></pre></div><p><strong>Q：我在配置文件中给某一项设置了值，但为什么总是看不到效果啊？</strong><br>_config.yml文件中的每个属性值前面必须留一个空格，建议在 Sublime/Notepad++ 中开启显示所有空格模式。另每篇文章的 front-matter也要注意这个问题。</p><p><strong>Q：如何建立自我介绍页面（About 页面）？</strong><br>首先在主目录找到_config.yml，找到url添加about_dir: about到这个板块。然后在/source里面建立about文件夹。在about文件夹里建立index.md。编index.md就和发布其他的文章一样，格式都一样。</p><p><strong>Q：怎么提意见和建议？</strong><br>主题还在不断完善中，欢迎 <a href="https://github.com/wuchong/jacman/issues" target="_blank" rel="noopener">open issue</a> 来提建议，参与讨论。</p><p><strong>Q：楼主我不喜欢你的配色，怎么换主题的颜色呢？</strong><br>包括颜色在内的很多变量都在jacman/source/css/_base/variable.styl<br>文件中，可以修改成你喜欢的。</p><p><strong>Q：英语更能突显我的逼格，怎么换成英语？</strong><br>配置你的博客根目录下的_config.yml，去掉language: zh-CN。</p><p><strong>Q：为什么我修改了配置文件/发表了博文，解析出来的却是乱码呢？</strong><br>请将你的配置文件/markdown文件保存成 UTF-8 格式。</p><p><strong>Q：为什么开启了微博秀后，显示是空白的，没有内容展示？</strong><br>每次修改参数都会这样，需要多刷新几次或者上传到服务器上就好了。</p><p><strong>Q：博主 Jacman Demo 站点中文章的 md 源文件在哪能看到呢？</strong><br>我将 Demo 站点所有源文件放在了 Jacman 的 <a href="https://github.com/wuchong/jacman/tree/site" target="_blank" rel="noopener">site</a> 分支下。</p><h2 id="相关资源："><a href="#相关资源：" class="headerlink" title="相关资源："></a>相关资源：</h2><p><a href="https://github.com/" target="_blank" rel="noopener">GitHub社区</a><br><a href="https://hexo.io/themes/" target="_blank" rel="noopener">Hexo主题</a><br><a href="https://nodejs.org/en/" target="_blank" rel="noopener">Node.js</a><br><a href="https://git-scm.com/" target="_blank" rel="noopener">Git客户端</a></p><h2 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h2><p><a href="http://www.wuxubj.cn/2016/08/Hexo-nexT-build-personal-blog/" target="_blank" rel="noopener">Hexo+nexT主题搭建个人博客</a><br><a href="http://www.cnblogs.com/zhcncn/p/4097881.html" target="_blank" rel="noopener">金石开-Hexo搭建Github静态博客</a><br><a href="http://wuchong.me/blog/2014/11/20/how-to-use-jacman/" target="_blank" rel="noopener">wuchong-如何使用 Jacman 主题</a><br><a href="http://www.jianshu.com/p/05289a4bc8b2" target="_blank" rel="noopener">CNFeat-如何搭建一个独立博客——简明Github Pages与Hexo教程</a><br><a href="http://www.bkjia.com/webzh/995207.html" target="_blank" rel="noopener">使用GitHub和Hexo搭建免费静态Blog</a><br><a href="http://ibruce.info/2013/11/22/hexo-your-blog/?utm_source=tuicool&utm_medium=referral" target="_blank" rel="noopener">不如-hexo你的博客</a><br><a href="http://qjzhixing.com/2015/08/26/#四、Hexo的基本命令" target="_blank" rel="noopener">起今知行-使用Hexo搭建博客（二），搭建博客的过程</a></p><p><strong>感谢以上诸位博主的热心分享o(≧v≦)o~~</strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发与填坑</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Hexo</tag>
+      
+      <tag>window</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>《最终幻想觉醒》评测：英雄幻想的延续</title>
+    <link href="/2016/12/31/2016123101/"/>
+    <url>/2016/12/31/2016123101/</url>
+    
+    <content type="html"><![CDATA[<blockquote><p>恰饭向，谨慎食用</p></blockquote><p>“要有梦想，想成为英雄的话，就一定要有梦想。”——扎克斯《最终幻想》</p><p>对于绝大多数的游戏玩家来说，《最终幻想》是一个始终无法跨越的话题。也许你并没有玩过这个系列的任何一款游戏，但是你至少听过他。作为一款1987年发布的游戏，《最终幻想》系列已经走过了29个年头，发布了15部正版续作。最终幻想虽然取名为最终，但实际上它一直都没有结束或者说是放弃，属于幻想的故事一直在延续。而近日上线的《最终幻想觉醒》同样是这一故事的延续。</p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20161231/1.jpg" srcset="/img/loading.gif" alt=""></p><h2 id="剧情与背景"><a href="#剧情与背景" class="headerlink" title="剧情与背景"></a>剧情与背景</h2><p>《最终幻想觉醒》是由史克威尔艾尼克斯正版授权，完美世界代理的移植于原作《最终幻想零式》的大型MMOARPG全CG电影手游。先说游戏剧情，因为主要是半移植的作品，所以剧情改动的并不大。</p><p>游戏主要讲述的是在一个名为奥利恩斯的世界中，存在着四块拥有自我意志的水晶，和以水晶为中心建立的四个国家。分别是代表魔法的朱雀卢布卢姆，代表科技的白虎米利提斯、漂浮于空中的苍龙康科迪亚和代表坚守与防御的玄武洛里卡。后来白虎凭借着强大的魔导科技，对朱雀展开了侵略战争，并突袭了朱雀魔导学院。而主角作为学院的零班学生，于是便与白虎等势力进行战斗。</p><h2 id="画面与音效"><a href="#画面与音效" class="headerlink" title="画面与音效"></a>画面与音效</h2><p>《最终幻想觉醒》的画质在手游领域应该说是业内领先的，据说游戏采用了最新研发的Orience(奥利恩斯)动画编辑引擎，结合Unity3D，融入即时渲染…….具体的专业术语我就不详细介绍了，还是来和大家分享一下游戏的实际体验。</p><p>首先是游戏的开场动画，逼真的人物建模加上细腻的场景刻画，给玩家带来了动画电影的享受。虽然还比不上主机版堪称逆天的画质，但是手游中绝对可以说是顶尖的。并且更重要的是，不仅是开场拥有动画，在整个游戏的过程中都会时不时出现过场动画。据说游戏中数百部不同的CG动画，因此可以让你有一种在电影中插播游戏的感觉。</p><p>其次是游戏中的捏脸系统，除了常见的脸型、发型、发色的选择之外，游戏中居然还设置了性格选项，不同性格的角色声音也是不一样的，另外值得一提的是玩家捏成的角色，不仅在游戏场景中显示，在之后的CG动画中也同样显示。</p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20161231/2.jpg" srcset="/img/loading.gif" alt=""></p><p>游戏的主界面是在魔导学院之中，白云、城墙、喷泉之类的精致场景就不多说了，值得一提的是游戏中交互做的也非常不错，比如当玩家靠近白鸽的话，鸽子会四散飞起，只不过有一点，就是周围那充满页游风味的UI，大大减小了游戏的代入感。</p><h2 id="玩法与操作"><a href="#玩法与操作" class="headerlink" title="玩法与操作"></a>玩法与操作</h2><p>《最终幻想觉醒》的操作玩法和市面上的MMOARPG一样，都是采用的是虚拟摇杆和按键，左手控制人物行走，右手点击释放技能，略微有一点不同的是虚拟摇杆采用的是触发式，当玩家没有触碰时会自动消失，这一点还是比较不错的，增大了玩家的视野。另外游戏中的闪避技能还是非常实用的，比如当敌方释放大技能时，可在瞬间躲过，并且如果在躲避的同时在发动攻击，有一定的几率会打断敌方的技能释放。</p><p>游戏中提供三种职业，分别是风剑士、炎枪手还有冰魔导，各有各的特色，很难说谁强谁弱。只不过在游戏中对战斗走位的要求比较高，因此要求玩家具有一定的操作技术。当然作为国产手游，《最终幻想觉醒》同样设定了自动寻路、自动战斗玩法，有趣的是即使在自动战斗中，玩家依然可以手动释放普通技能，特殊技，以及召唤军神，这样的设置即可让玩家节省时间，又能控制的游戏的节奏，保持了游戏的乐趣。</p><p>至于军神系统，实际上借鉴的《最终幻想系列》中的“召唤兽”系统，一开始玩家需要通过完成五个关卡，来获得第一个军神“奥丁”，可以帮助玩家进行战斗。除了军神之外游戏还继承了《FF零式》的小队形式。阵容里有5个位置，采用的3+2的模式，3代表实际参与战斗的人数，其中有一个是队长，并拥有队长技，2代表了替补的英雄，可以相互切换上场。</p><p>除了战斗玩法之外，另一个需要介绍的就是养成系统，和目前大多数游戏一样，《最终幻想觉醒》采用的是英雄收集和养成，养成没什么好说的，无非就是升级、升星、升阶等常见元素。而作为游戏主要氪金点的英雄收集，玩家可以在游戏主界面上方的英雄召唤选项中进行召唤，当然，按照国产手游的风格，同样也有十连抽等设置。</p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20161231/3.jpg" srcset="/img/loading.gif" alt=""></p><p>总而言之，《最终幻想觉醒》不管是从游戏画面、操作玩法还是剧情上来说，都具有一个非常高的水准。我想即便是脱离最终幻想这个IP，以及鹿晗代言的号召力，也同样是一款诚意满满的精品之作。因此不管你是FF的脑残粉还是普通玩家都大可以尝试一下，当然如果有条件的话也可以直接上手ps4版的《FF零式》。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>游戏杂谈</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>游戏</tag>
+      
+      <tag>评测</tag>
+      
+      <tag>最终幻想</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>《追光者2》评测：虐心之作 手残勿进</title>
+    <link href="/2016/12/25/2016122501/"/>
+    <url>/2016/12/25/2016122501/</url>
+    
+    <content type="html"><![CDATA[<p>苹果商店的新游推荐了一款名为《追光者2》的手游。苹果编辑推荐的游戏，质量上还是很有保障的，于是便下载试玩了一下。首先需要声明的是，因为之前并没有玩过前作《追光者》，所以在看到《追光者2》官方介绍上虐心、慎入、黑暗这些字眼时，让人觉得这是一款情节感人、偏向暗黑的虐心游戏。但事实上，当进入游戏后，才发现这款游戏不只虐心更虐手。</p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20161225/1.jpg" srcset="/img/loading.gif" alt=""></p><p><strong>“黑夜给了我一双黑色的眼睛，而我却用它来寻找光明。”</strong></p><p>如果要给这款游戏的剧情写一个文案的话，这首顾城的诗应该最适合不过了。《追光者2》的主角名叫露西，是光之巨塔的守护者，但是光之巨塔逐渐失去明亮，城市的光也四处分散，梦魇在黑暗中出现了，为了能让城市再度恢复活力，寻回失去的光芒，她踏上了探索梦中世界的旅途。</p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20161225/2.jpg" srcset="/img/loading.gif" alt=""></p><p>因为没有玩过《追光者》，所以不知道《追光者2》相比较前作在画质上究竟提高了多少。但是就以这款游戏来说，精致的画面确实让人眼前一亮。简约偏卡通的画风，加上淡雅柔和的色彩，为玩家营造了一个昏暗而富有质感的梦境世界。</p><p>除此之外，游戏中的音效与内容结合也恰到好处，角色在移动的过程当中还会有轻轻的钢琴声作为引导的节奏。随着钢琴声起起伏伏，心情也变得莫名的紧张。而这种即时反馈的音效设置，颇有点像当年名噪一时的节奏大师。</p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20161225/3.jpg" srcset="/img/loading.gif" alt=""></p><p>《追光者2》的操作看似非常简单，游戏中有两个按键，左边是月亮，右边是星星。同时在游戏中砖块下也会有相对应的月亮星星图案，而玩家需要根据相应的图案进行按键，按错了就会死亡，重新开始。如果只是这样的话也不是非常难，只要看仔细后都能轻松过关。</p><p>难点在于游戏中还有各式各样的机关陷阱会阻拦玩家前进，比如尖刺、天外飞石还有黑风等等。大大缩短了玩家的思考时间，在行动的瞬间，一个不小心就能让玩家一命呜呼。而作为手残玩家，不出意外的在第一关就已经连续死了十多次（跪地哭）。</p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20161225/4.jpg" srcset="/img/loading.gif" alt=""></p><p>如果排除那坑爹的游戏操作，按照类型划分，《追光者2》应该属于一款解谜闯关类游戏，四个章节总共100多个关卡的设计，绝对能让玩家在生和死的考验中找到光明的意义（偷笑）。同时玩家在冒险中还可以收集光芒，而光芒能够帮助露西培育光之树，解锁新的道具和服装。</p><p>除了解谜收集的玩法之外，游戏中还加入了RPG游戏中常见的技能元素，比如生命之泉可以在开局增加血量，光之力可以提升收集光芒的数量、时之力可以降低解谜玩法的难度细数等。当然这些技能并不是免费的，需要花费光芒进行解锁，而如果光芒不够的话，玩家也可以选择氪金。</p><p>说到氪金， 游戏中还设置了体力元素，当玩家挑战关卡，会减少相应的体力，而体力不够时，游戏为玩家提供了三种解决方案，一是等待时间让体力自动恢复，二是氪金充值体力，三是观看游戏中所提供的广告来获得体力。不得不说，这割韭菜的手法还真不错，土豪和贫民玩家都照顾到了。至少，手残的评测君就已经观看了7、8遍广告了。</p><p>总而言之，《追光者2》以简单而又饱含深意的游戏剧情、加上淡雅简约的画风，在目前充斥着卖肉、三国、西游、仙侠等题材的游戏市场上，宛如一股清流，带给玩家清新舒服的感觉。另外虽然游戏中加入氪金元素，但是并没有无底线的滥用坑钱，而是在游戏性和赚钱之间找到了一个较为不错的平衡点。只是其复杂的操作玩法，让手残玩家感到有些累觉不爱。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>游戏杂谈</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>追光者</tag>
+      
+      <tag>游戏</tag>
+      
+      <tag>评测</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>《冒险村物语》评测：勇者背后的剥削者</title>
+    <link href="/2016/11/06/2016110601/"/>
+    <url>/2016/11/06/2016110601/</url>
+    
+    <content type="html"><![CDATA[<p>《冒险村物语(Dungeon Village)》是由 Kairosoft (开罗) 开发的一款模拟经营类的游戏。</p><p>Kairosoft 是一家日本手机游戏和电脑游戏的开发商，擅长开发像素风的模拟经营类游戏，比较有名有：《游戏发展国》、《财阀都市V》、《书店故事》等。</p><p>而《冒险村物语》同样延续了经典的像素风格画面和电玩风格的BGM，不同的是加入了以勇者冒险为题材的RPG元素，同样是一款能够勾起很多儿时回忆的复古游戏。</p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20161106/01.jpg" srcset="/img/loading.gif" alt=""></p><p>还记得小时候玩的红白机吗？</p><p>在那个像素RPG游戏称霸的年代里，出现最多的便是以勇者和冒险为主题的游戏。游戏中玩家们经常会扮演着一身正气的勇者，然后几经波折，最后打败大魔王，拯救公主，从此过上了没羞没臊的生活。虽然你可能连勇者叫什么都不知道，因为也看不懂日文，同样也没什么剧情。但这却丝毫不影响你玩游戏的热情。</p><p>而这款《冒险村物语(Dungeon Village)》同样的像素风，同样的冒险主题，同样的没有剧情，但不一样的是游戏反其道而行，从一个单打独斗最多带上几个小伙伴的勇者，转变为一个厚黑的冒险村经营者。</p><p>通过建造武器店、防具店、面包店、旅店等各种设施来吸引更多的冒险者前来，而这些冒险者在你领地吃喝消费的同时，还能帮助你去消灭一些野外的妖怪，为你稳固家园并带来收益，想想是不是有点小兴奋呢。</p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20161106/02.jpg" srcset="/img/loading.gif" alt=""></p><p>对于玩家来说每天最重要的日常便是赚钱和积累人气了，毕竟这是让自己村子升级的必要条件，游戏中村子的等级分为5级，为1-5星。</p><p>当满足升星条件时，会出现过场动画，由国王授予星级勋章，每到这个时候是笔者最为开心的日子，毕竟作为一名 <del>经营</del> 剥削者升官才能更好的剥削。而赚钱的话可以通过建造一些像旅店、武器店、包子店等即可提升冒险者的实力，又可以赚取金币的建筑。</p><p>积累人气相对就比较麻烦一点，需要完成各类任务或者举行活动，人气越高，被吸引而来的冒险者也会更多。通过修建定居点可以让冒险者们留在村子，成为冒险村的居民。随着村子的一步步的发展壮大，会随机出现各类事件，为日常的生活增添一点乐趣，如打败入侵的魔王，拯救逃跑的公主之类的。</p><p>至于游戏的战斗系统，身为游戏中的剥削者，当然不需要玩家亲自去战斗，因此游戏中的战斗采用全自动的方式，玩家只要发布任务，招募勇者前去冒险就行了。完成任务后勇者也会自行升级，同时冒险所获得的宝物也会自行上交到玩家手中，万恶的资本家就是这么的爽。</p><p>当然如果不希望勇者过早的 GAMEOVER，玩家还可以通过赠送礼物的方式来强化这些冒险者，就是用他们得来上交的武器再装备给他们，而冒险者属性上升的同时，也会提高满意和勤奋度，是一笔稳赚不赔的买卖。</p><p><img src="https://frontend-studio-1256354221.file.myqcloud.com/img/20161106/03.jpg" srcset="/img/loading.gif" alt=""></p><p>《冒险村物语》作为一款冒险RPG模拟经营类游戏，并不是和一般的城镇经营类游戏一样，以城镇的繁华为目的，他更多的是以对冒险者的培养为核心。换句话说就是它是作为主角养殖者的存在，看着一个个本应为游戏主角的勇者们，在自己的 <del>培养</del> 剥削下，打魔王、救公主。最终成为一名传说中的勇士。不得不说游戏的创意堪称一流。</p><p>当然作为一款纯单机游戏，还是存在一些不足的。游戏中没有为玩家设定明确的目标，除了收集宝物之外，就是简单的分值计算。此外游戏中的非战斗类的职业，也没有很好的体现出来，基本和战斗类职业一样，因此显得有些鸡肋。但整体上瑕不掩瑜，还是一款诚意之作。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>游戏杂谈</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>游戏</tag>
+      
+      <tag>评测</tag>
+      
+      <tag>冒险村物语</tag>
+      
+      <tag>勇者</tag>
+      
+      <tag>经营</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>《遗落战境》短评：何谓真实</title>
+    <link href="/2016/11/06/2017061201/"/>
+    <url>/2016/11/06/2017061201/</url>
+    
+    <content type="html"><![CDATA[<p>什么是真？</p><p>什么又是假？</p><p>记得很久以前从某本书上看到这样一段话：你所看到、听到、知道的一切，很大程度上都是他人想让你看的、听到、知道的。</p><p>换而言之，我们曾经所信以为真的真相，不过是别人精心营造的谎言罢了。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>影评</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>遗落战境</tag>
+      
+      <tag>电影</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>FCC 练习项目</title>
+    <link href="/2016/10/20/FCC/"/>
+    <url>/2016/10/20/FCC/</url>
+    
+    <content type="html"><![CDATA[<p>以前的一些练习作品</p><div class="note note-success">            <p>已开源</p>          </div><h2 id="DEMO"><a href="#DEMO" class="headerlink" title="DEMO"></a>DEMO</h2><h3 id="预览地址：https-xiaohouye1995-github-io-FCC-resume-index-html"><a href="#预览地址：https-xiaohouye1995-github-io-FCC-resume-index-html" class="headerlink" title="预览地址：https://xiaohouye1995.github.io/FCC/resume/index.html"></a>预览地址：<a href="https://xiaohouye1995.github.io/FCC/resume/index.html" target="_blank" rel="noopener">https://xiaohouye1995.github.io/FCC/resume/index.html</a></h3><h3 id="开源地址：https-github-com-xiaohouye1995-FCC"><a href="#开源地址：https-github-com-xiaohouye1995-FCC" class="headerlink" title="开源地址：https://github.com/xiaohouye1995/FCC"></a>开源地址：<a href="https://github.com/xiaohouye1995/FCC" target="_blank" rel="noopener">https://github.com/xiaohouye1995/FCC</a></h3><h2 id="运行平台"><a href="#运行平台" class="headerlink" title="运行平台"></a>运行平台</h2><p>PC/mobile</p><h2 id="框架-工具"><a href="#框架-工具" class="headerlink" title="框架/工具"></a>框架/工具</h2><ul><li>jQuery</li><li>bootstrap</li><li>原生</li></ul><h2 id="功能需求"><a href="#功能需求" class="headerlink" title="功能需求"></a>功能需求</h2>]]></content>
+    
+    
+    <categories>
+      
+      <category>项目实验室</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>jQuery</tag>
+      
+      <tag>bootstrap</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>我在西湖饮酒醉</title>
+    <link href="/2016/10/16/2016101601/"/>
+    <url>/2016/10/16/2016101601/</url>
+    
+    <content type="html"><![CDATA[<p>山外青山楼外楼，西湖歌舞几时休</p><p>西湖自古以来便是文人骚客所钟爱的地方</p><p>吟诗游湖，品龙井，听昆曲，尝醋鱼</p><p>样样都透露着一番精细，雅致</p><p>而我则不同</p><p>饮酒，舞剑</p><p>处处都彰显着几分粗鄙，豪放</p><p>因为我不是文人</p><p>我身披兵甲，向北而来</p><p>做不到吴侬软语</p><p>做不到莺歌燕舞</p><p>更做不到直把杭州作汴州</p><p>可那又如何</p><p>西湖是书生状元的西湖</p><p>西湖也是岳武穆的西湖</p><p>今夜酒醒</p><p>人依旧醉</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>诗词歌赋</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>西湖</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>责任与选择</title>
+    <link href="/2015/08/24/2015082401/"/>
+    <url>/2015/08/24/2015082401/</url>
+    
+    <content type="html"><![CDATA[<p>每个人都有自己的路</p><p>同时也拥有着选择的权利</p><p>继续或者放弃</p><p>不管你的选择是什么</p><p>但既然决定了就要对自己负责</p><p>也不要期待别人替你承担</p><p>当然也不要轻易的承诺对别人负责</p><p>插手别人的人生</p><p>意味着将选择的权利交到了对方手中</p><p>我的路还很长</p><p>不知道能在这条路上走多远</p><p>也不知道能否一直坚持或者中途放弃</p><p>但我知道责任</p><p>知道接受与回报</p><p>知道他们能让我在迷路或者无路可走的时候</p><p>拥有继续选择的力量</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>诗词歌赋</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>梦想</title>
+    <link href="/2015/07/13/2015071301/"/>
+    <url>/2015/07/13/2015071301/</url>
+    
+    <content type="html"><![CDATA[<p>你常问我的梦想</p><p>我说没有</p><p>你不信</p><p>说优秀的人</p><p>不会没有梦想</p><p>我笑</p><p>因为我并不优秀</p><p>你笑</p><p>因为你并不在乎</p><p>现在我有梦想</p><p>就是</p><p>和你一起</p><p>笑</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>诗词歌赋</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>面具</title>
+    <link href="/2015/06/23/2015062301/"/>
+    <url>/2015/06/23/2015062301/</url>
+    
+    <content type="html"><![CDATA[<p>不要为别人而活</p><p>不要附庸风雅</p><p>不要无病呻吟</p><p>不要站在高高的台子上</p><p>带着面具</p><p>向我挥手微笑</p><p>因为</p><p>我并不喜欢</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>诗词歌赋</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>奔跑</title>
+    <link href="/2015/06/16/2015061601/"/>
+    <url>/2015/06/16/2015061601/</url>
+    
+    <content type="html"><![CDATA[<p>每一次的低头</p><p>都是沉默的坚强</p><p>一次次的抬头</p><p>奋发出青春的力量</p><p>每一次的微笑</p><p>都是优雅的风度</p><p>一次次的狰狞</p><p>呐喊出前进的方向</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>诗词歌赋</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>南京恋歌-四季组曲</title>
+    <link href="/2015/06/14/2015061401/"/>
+    <url>/2015/06/14/2015061401/</url>
+    
+    <content type="html"><![CDATA[<h4 id="仲夏车站"><a href="#仲夏车站" class="headerlink" title="仲夏车站"></a>仲夏车站</h4><p>期待、期待和你见面</p><p>在某个车站</p><p>可是、可是繁多的站名</p><p>却让我迷乱</p><p>飞跑的的士、旋转的时钟</p><p>停留、停留在那</p><p>可爱的脸庞前</p><hr><h4 id="秋日布丁"><a href="#秋日布丁" class="headerlink" title="秋日布丁"></a>秋日布丁</h4><p>那是秋日下的午后</p><p>我应你的邀请</p><p>踏上美妙的短暂旅途</p><p>那是时光里的青春</p><p>只有我和你</p><p>小小布丁，暧昧非常</p><p>年轻的我们</p><p>拥有的不只是友谊</p><p>还有</p><p>那酸涩的荷尔蒙</p><hr><h4 id="冬季府宅"><a href="#冬季府宅" class="headerlink" title="冬季府宅"></a>冬季府宅</h4><p>暖冬的阳光</p><p>照耀你我</p><p>苦涩的咖啡</p><p>牵引你我</p><p>彼此的眼眸下</p><p>你知我，我懂你</p><p>黄昏下的光辉</p><p>透过岁月</p><p>诉说民国，诉说风情</p><p>诉说你我</p><hr><h4 id="晴春晓别"><a href="#晴春晓别" class="headerlink" title="晴春晓别"></a>晴春晓别</h4><p>鲜花总是美艳</p><p>却独自凋零</p><p>星光总是美好</p><p>却终会黯然</p><p>牵着手、亲吻你</p><p>在五彩的霓虹下</p><p>烟花已冷、繁华落幕</p><p>空无的双手</p><p>终可拥抱春天</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>诗词歌赋</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>南京</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>
